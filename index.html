@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proactive Agent 全网调研报告</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --card2: #14162a;
+    --border: #2a2d45;
+    --accent: #7c6ff7;
+    --accent2: #5dbaff;
+    --accent3: #52d9b1;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --tag-bg: #252840;
+    --red: #ff6b6b;
+    --yellow: #ffd93d;
+    --green: #6bcb77;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, 'Inter', 'SF Pro Text', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #12102a 0%, #1a1040 50%, #0d1829 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(124,111,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+  .header .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .header .meta {
+    margin-top: 16px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    background: rgba(124,111,247,0.12);
+    border: 1px solid rgba(124,111,247,0.25);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.8rem;
+    color: #a78bfa;
+  }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── TL;DR ── */
+  .tldr {
+    background: linear-gradient(135deg, #1a1d3a, #161928);
+    border: 1px solid rgba(124,111,247,0.3);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 40px 0 36px;
+  }
+  .tldr h2 {
+    color: var(--accent);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .tldr p {
+    color: #c4cde0;
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+  .tldr strong { color: #fff; }
+
+  /* ── Section ── */
+  .section { margin: 48px 0; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .icon-purple { background: rgba(124,111,247,0.18); }
+  .icon-blue { background: rgba(93,186,255,0.15); }
+  .icon-green { background: rgba(82,217,177,0.15); }
+  .icon-orange { background: rgba(255,184,0,0.13); }
+  .section-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .section-header span {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(124,111,247,0.4); }
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .card p {
+    color: #9aa5b8;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  /* ── Grid ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── Approach Cards ── */
+  .approach {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .approach::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .approach.purple::before { background: linear-gradient(90deg, #7c6ff7, #a78bfa); }
+  .approach.blue::before   { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .approach.green::before  { background: linear-gradient(90deg, #10b981, #34d399); }
+  .approach.orange::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+  .approach.pink::before   { background: linear-gradient(90deg, #ec4899, #f472b6); }
+
+  .approach-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+  .approach.purple .approach-num { color: #a78bfa; }
+  .approach.blue .approach-num { color: #60a5fa; }
+  .approach.green .approach-num { color: #34d399; }
+  .approach.orange .approach-num { color: #fbbf24; }
+  .approach.pink .approach-num { color: #f472b6; }
+
+  .approach h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .approach p {
+    color: #9aa5b8;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+
+  /* ── Tags ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 0.75rem;
+  }
+  .tag.purple { background: rgba(124,111,247,0.12); border-color: rgba(124,111,247,0.3); color: #a78bfa; }
+  .tag.blue { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+  .tag.green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.3); color: #34d399; }
+  .tag.orange { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: #fbbf24; }
+
+  /* ── Architecture Diagram ── */
+  .arch-diagram {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin: 0 0 24px;
+    font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  }
+  .arch-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.83rem;
+  }
+  .arch-box {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .arch-box.purple { background: rgba(124,111,247,0.15); border-color: rgba(124,111,247,0.4); color: #c4b5fd; }
+  .arch-box.blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: #93c5fd; }
+  .arch-box.green { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
+  .arch-box.orange { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); color: #fcd34d; }
+  .arch-box.pink { background: rgba(236,72,153,0.15); border-color: rgba(236,72,153,0.4); color: #f9a8d4; }
+  .arch-arrow { color: var(--muted); font-size: 1rem; }
+  .arch-label { color: var(--muted); font-size: 0.78rem; font-family: system-ui, sans-serif; }
+
+  /* ── Comparison Table ── */
+  .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 14px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: #1e2138;
+    color: #94a3b8;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    color: #9aa5b8;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td:first-child { color: #e2e8f0; font-weight: 600; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .dot.green { background: var(--green); }
+  .dot.yellow { background: var(--yellow); }
+  .dot.red { background: var(--red); }
+
+  /* ── Projects ── */
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .project-card:hover { border-color: rgba(124,111,247,0.4); }
+  .project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .project-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #a78bfa;
+    font-family: 'Fira Code', monospace;
+  }
+  .project-stars {
+    font-size: 0.75rem;
+    color: #fbbf24;
+    white-space: nowrap;
+  }
+  .project-desc {
+    color: #8892a4;
+    font-size: 0.83rem;
+    line-height: 1.55;
+  }
+
+  /* ── Insight boxes ── */
+  .insight {
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .insight.key {
+    background: rgba(124,111,247,0.08);
+    border: 1px solid rgba(124,111,247,0.25);
+  }
+  .insight.warn {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.25);
+  }
+  .insight.note {
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.25);
+  }
+  .insight-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .insight-text { color: #c4cde0; font-size: 0.9rem; line-height: 1.65; }
+  .insight-text strong { color: #fff; }
+
+  /* ── Decision framework ── */
+  .decision-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .decision-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .decision-q { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+  .decision-a { font-size: 0.88rem; font-weight: 600; color: #fff; }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  /* ── Inline code ── */
+  code {
+    background: rgba(124,111,247,0.12);
+    border: 1px solid rgba(124,111,247,0.2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.85em;
+    font-family: 'Fira Code', monospace;
+    color: #c4b5fd;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Proactive Agent 全网调研报告</h1>
+  <p class="subtitle">从 Reactive 到 Proactive：实现方式全景扫描</p>
+  <div class="meta">
+    <span class="meta-item">📅 2026-03-23</span>
+    <span class="meta-item">🔍 来源：GitHub / arXiv / Medium / LinkedIn / Salesforce Docs</span>
+    <span class="meta-item">📊 覆盖 2024–2026 最新进展</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <h2>TL;DR</h2>
+    <p>
+      Proactive Agent = <strong>持续运行的 Agent，主动在合适时机采取行动</strong>，不等用户 prompt。<br>
+      核心问题有三个：<strong>① 何时触发（Trigger）</strong>、<strong>② 基于什么上下文决策（Context）</strong>、<strong>③ 采取什么行动（Action）</strong>。<br>
+      目前业界主流实现分为 5 类，从最简单的定时轮询到最复杂的认知架构 Inner Thoughts，成熟度和复杂度差异很大。<strong>没有最好的方案，只有最适合场景的方案。</strong>
+    </p>
+  </div>
+
+  <!-- Section 1: 核心问题定义 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🎯</div>
+      <div>
+        <h2>Reactive vs Proactive：核心区别</h2>
+        <span>为什么这件事难</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>😴 Reactive Agent（传统）</h3>
+        <p>等待用户 prompt → 响应。生命周期是单次 session，不持续运行。知道你问了什么，不知道你<em>需要</em>什么。ChatGPT、Copilot 都是这个模型。</p>
+      </div>
+      <div class="card">
+        <h3>🚀 Proactive Agent（目标）</h3>
+        <p>持续监控信号 → 自主判断时机 → 主动行动或建议。不需要用户先开口。核心是<strong>主动性</strong>（Initiative）和<strong>时机感</strong>（Timing）。OpenClaw、GitHub Copilot Agent Mode 是典型实践。</p>
+      </div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">💡</span>
+      <div class="insight-text">
+        <strong>关键洞察：</strong>Proactive Agent 的难点不是 LLM 能力，而是<strong>激活机制</strong>（Activation）——什么时候叫醒 Agent、用什么上下文、叫醒后做什么。这三个问题决定了一切架构选择。
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: 5种实现方式 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⚙️</div>
+      <div>
+        <h2>5 种实现方式</h2>
+        <span>从简到复杂，覆盖 2024–2026 主流方案</span>
+      </div>
+    </div>
+
+    <!-- Approach 1 -->
+    <div class="approach purple" style="margin-bottom:16px;">
+      <div class="approach-num">方式 01</div>
+      <h3>⏰ Schedule-Based（定时触发）</h3>
+      <p>
+        最简单也最常见的方式。用 <code>cron</code>、<code>APScheduler</code>、<code>asyncio</code> 等定时调用 Agent，Agent 在每次触发时扫描上下文、判断是否需要行动。<br><br>
+        <strong>典型实现：</strong>每天 23:00 扫描日志 → 提取关键观察写入 OBSERVATIONS.md（就是本项目的 observer.py）。也是 grapeot context-infrastructure 的核心机制。
+      </p>
+      <div class="tags">
+        <span class="tag purple">cron</span>
+        <span class="tag purple">APScheduler</span>
+        <span class="tag purple">asyncio loop</span>
+        <span class="tag">Python</span>
+        <span class="tag">最易实现</span>
+      </div>
+      <br>
+      <div style="display:flex;gap:20px;font-size:0.83rem;">
+        <div><span style="color:#34d399">✓ 可预测、可审计</span></div>
+        <div><span style="color:#34d399">✓ 无需事件基础设施</span></div>
+        <div><span style="color:#ff6b6b">✗ 时机不精准（可能太早/太晚）</span></div>
+      </div>
+    </div>
+
+    <!-- Approach 2 -->
+    <div class="approach blue" style="margin-bottom:16px;">
+      <div class="approach-num">方式 02</div>
+      <h3>📡 Event-Driven（事件驱动触发）</h3>
+      <p>
+        当特定事件发生时才触发 Agent，而不是轮询。事件可以来自：Webhook、数据库 CDC（Change Data Capture）、消息队列（Kafka/RabbitMQ）、Platform Events（Salesforce）等。<br><br>
+        <strong>典型实现：</strong>GitHub Issue 被创建 → Webhook → Agent 自动分析并回复。新邮件到达 → 邮件钩子 → Agent 分类处理。Salesforce Agentforce 是企业级典型案例。
+      </p>
+      <div class="tags">
+        <span class="tag blue">Webhook</span>
+        <span class="tag blue">CDC</span>
+        <span class="tag blue">Kafka</span>
+        <span class="tag blue">Platform Events</span>
+        <span class="tag">n8n</span>
+        <span class="tag">Zapier</span>
+      </div>
+      <br>
+      <div style="display:flex;gap:20px;font-size:0.83rem;flex-wrap:wrap;">
+        <div><span style="color:#34d399">✓ 响应及时、不浪费算力</span></div>
+        <div><span style="color:#34d399">✓ 天然适合高频变化场景</span></div>
+        <div><span style="color:#ff6b6b">✗ 需要事件基础设施</span></div>
+        <div><span style="color:#ff6b6b">✗ 不适合需要主动扫描的场景</span></div>
+      </div>
+    </div>
+
+    <!-- Approach 3 -->
+    <div class="approach green" style="margin-bottom:16px;">
+      <div class="approach-num">方式 03</div>
+      <h3>🔄 Hybrid：Schedule + Event（混合触发）</h3>
+      <p>
+        业界最推荐的方式：<strong>定时触发（Proactive）+ 事件触发（Reactive）双轨并行</strong>。<br><br>
+        <strong>事件触发</strong>让 Agent 对重要变化即时响应（新邮件、报警、部署），<strong>定时触发</strong>保证定期健康检查、日志审计、安全扫描。两者不是竞争关系，是互补的。<br><br>
+        Montana Flynn（LinkedIn，2026-03）总结：「Reactive triggers make agents timely. Proactive triggers make agents reliable.」
+      </p>
+      <div class="tags">
+        <span class="tag green">双轨并行</span>
+        <span class="tag green">互补设计</span>
+        <span class="tag">生产推荐</span>
+      </div>
+    </div>
+
+    <!-- Approach 4 -->
+    <div class="approach orange" style="margin-bottom:16px;">
+      <div class="approach-num">方式 04</div>
+      <h3>🧠 Context-Aware Timing（上下文感知触发）</h3>
+      <p>
+        Agent 自己决定「什么时候说话」。通过多因子决策引擎（对话流、用户参与度、紧急程度、响应间隔）动态计算下次响应时机，而不是固定间隔。<br><br>
+        <strong>leomariga/ProactiveAgent</strong>（Python 库）的核心设计：<code>min_response_interval</code>、<code>max_response_interval</code>、<code>probability_weight</code> 共同决定激活时机。类似人类在群聊里「感觉到合适时机才插话」的行为。
+      </p>
+      <div class="tags">
+        <span class="tag orange">多因子决策</span>
+        <span class="tag orange">动态 sleep</span>
+        <span class="tag">leomariga/ProactiveAgent</span>
+        <span class="tag">适合对话场景</span>
+      </div>
+    </div>
+
+    <!-- Approach 5 -->
+    <div class="approach pink" style="margin-bottom:16px;">
+      <div class="approach-num">方式 05</div>
+      <h3>🧬 Inner Thoughts（认知架构触发）</h3>
+      <p>
+        最前沿的研究方向（CHI 2025 论文：Proactive Conversational Agents with Inner Thoughts）。Agent 像人类一样，在听对话的过程中<strong>并行运行内心思维</strong>，形成想法、评估是否值得发言、判断是否需要打断。<br><br>
+        五阶段框架：<code>Trigger → Retrieval → Thought Formation → Evaluation → Participation</code><br>
+        关键参数：<code>interruptThreshold</code>（1-5 打断阈值）——Agent 多强烈的想法才会打断用户。
+      </p>
+      <div class="tags">
+        <span class="tag" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3);color:#f9a8d4;">CHI 2025</span>
+        <span class="tag" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3);color:#f9a8d4;">ICLR 2025</span>
+        <span class="tag">研究前沿</span>
+        <span class="tag">多方对话场景</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: 架构图 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">🏗️</div>
+      <div>
+        <h2>通用架构：4 层模型</h2>
+        <span>Manu Francis（Medium, 2025） / 业界共识</span>
+      </div>
+    </div>
+
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box purple">① Trigger Layer</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">cron / webhook / event / context-aware timer</div>
+      </div>
+      <div style="margin-left:20px;color:var(--muted);font-size:0.8rem;margin-bottom:10px;">↓ 唤醒 Agent</div>
+      <div class="arch-row">
+        <div class="arch-box blue">② Sensor / Context Collector</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">抓取信号：日志、邮件、数据库、API、对话历史</div>
+      </div>
+      <div style="margin-left:20px;color:var(--muted);font-size:0.8rem;margin-bottom:10px;">↓ 传入上下文</div>
+      <div class="arch-row">
+        <div class="arch-box green">③ Reasoning Layer (LLM)</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">判断信号重要性 → 决定行动类型 → 生成响应</div>
+      </div>
+      <div style="margin-left:20px;color:var(--muted);font-size:0.8rem;margin-bottom:10px;">↓ 决策输出</div>
+      <div class="arch-row">
+        <div class="arch-box orange">④ Action Layer</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">发通知 / 写文件 / 调 API / 更新数据库 / 触发工作流</div>
+      </div>
+      <div style="margin-left:20px;color:var(--muted);font-size:0.8rem;margin-bottom:10px;">↓ （可选）Human-in-the-Loop</div>
+      <div class="arch-row">
+        <div class="arch-box pink">⑤ Memory Layer</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">存储历史、状态、用户偏好 → 下次触发时提供上下文</div>
+      </div>
+    </div>
+
+    <div class="insight note">
+      <span class="insight-icon">🔁</span>
+      <div class="insight-text">
+        <strong>Memory 是 Proactive Agent 的核心护城河。</strong> 没有跨 session 记忆，Agent 每次唤醒都是「失忆」状态，无法积累用户习惯和偏好。MemGPT（2024）、grapeot context-infrastructure、本项目的 observer/reflector 设计，本质上都是在解决这个问题。
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: 比较表 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-orange">📊</div>
+      <div>
+        <h2>5 种方式横向对比</h2>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>实现方式</th>
+            <th>触发精准度</th>
+            <th>实现复杂度</th>
+            <th>适合场景</th>
+            <th>代表工具/项目</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Schedule-Based</td>
+            <td><span class="dot yellow"></span>中</td>
+            <td><span class="dot green"></span>低</td>
+            <td>日报、定期检查、记忆蒸馏</td>
+            <td>cron, APScheduler, OpenClaw cron</td>
+          </tr>
+          <tr>
+            <td>Event-Driven</td>
+            <td><span class="dot green"></span>高</td>
+            <td><span class="dot yellow"></span>中</td>
+            <td>Webhook 场景、报警、CRM 自动化</td>
+            <td>n8n, Salesforce Agentforce, Zapier</td>
+          </tr>
+          <tr>
+            <td>Hybrid（推荐）</td>
+            <td><span class="dot green"></span>高</td>
+            <td><span class="dot yellow"></span>中</td>
+            <td>生产级 Agent，覆盖所有场景</td>
+            <td>OpenClaw, LangGraph, CrewAI</td>
+          </tr>
+          <tr>
+            <td>Context-Aware Timing</td>
+            <td><span class="dot green"></span>高</td>
+            <td><span class="dot yellow"></span>中</td>
+            <td>对话 Agent、聊天场景、个人助手</td>
+            <td>leomariga/ProactiveAgent, ContextOS</td>
+          </tr>
+          <tr>
+            <td>Inner Thoughts</td>
+            <td><span class="dot green"></span>最高</td>
+            <td><span class="dot red"></span>高</td>
+            <td>多方对话、人机协作、研究方向</td>
+            <td>CHI 2025 论文, thunlp/ProactiveAgent</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 5: 关键设计决策 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🧩</div>
+      <div>
+        <h2>3 个关键设计决策</h2>
+        <span>做 Proactive Agent 绕不开的问题</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3>① 触发阈值（When to Fire）</h3>
+      <p>Agent 不能什么都管，否则会「烦死人」。需要明确：什么情况下主动行动，什么情况下保持沉默。<br>
+      设计方式：<strong>固定规则</strong>（if 条件满足 then 触发）/ <strong>LLM 自主判断</strong>（把上下文传给模型让它决定）/ <strong>多因子评分</strong>（relevance score > threshold）。<br>
+      OpenClaw 的 HEARTBEAT.md 设计是一个实用的「沉默规则」实现。</p>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3>② Human-in-the-Loop（主动行动 vs 建议）</h3>
+      <p>完全自主行动风险高，但每次都等确认效率低。业界共识：<strong>低风险行动（写文件、发通知）自主执行；高风险行动（发邮件、删数据、外部 API 写入）需要人工确认</strong>。<br>
+      实现方式：Telegram 按钮确认、Slack Approve / Reject / Skip 三选项。</p>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3>③ 记忆架构（Memory）</h3>
+      <p>Proactive Agent 需要<strong>跨 session 记忆</strong>才能真正做到「懂你」。没有记忆，每次唤醒都是从零开始。<br>
+      分层设计是共识：<strong>短期（Working Memory = 当前 context window）→ 中期（OBSERVATIONS.md）→ 长期（rules / axioms / MEMORY.md）</strong>。<br>
+      2026-03 最新 arXiv 论文综述（arxiv:2603.07670）把 memory 总结为 write-manage-read 三步循环，是目前最权威的理论框架。</p>
+    </div>
+  </div>
+
+  <!-- Section 6: 开源项目 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-green">📦</div>
+      <div>
+        <h2>值得关注的开源项目</h2>
+        <span>GitHub 精选</span>
+      </div>
+    </div>
+
+    <div class="project-grid">
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/leomariga/ProactiveAgent" target="_blank" style="color:#a78bfa;text-decoration:none;">leomariga/ProactiveAgent ↗</a></div>
+        </div>
+        <div class="project-desc">Python 库，给任意 AI Agent 加上「智能时机」能力。多因子决策引擎决定何时响应，动态 sleep 计算器。适合对话场景。</div>
+        <br>
+        <div class="tags"><span class="tag purple">Python 库</span><span class="tag">pip install</span></div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/thunlp/ProactiveAgent" target="_blank" style="color:#a78bfa;text-decoration:none;">thunlp/ProactiveAgent ↗</a></div>
+        </div>
+        <div class="project-desc">ICLR 2025 接收论文对应代码。训练 LLM 主动预测用户任务需求、主动提供帮助。包含数据集和评估脚本。学术向。</div>
+        <br>
+        <div class="tags"><span class="tag blue">ICLR 2025</span><span class="tag">数据集</span><span class="tag">微调方案</span></div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/xfey/ContextOS" target="_blank" style="color:#a78bfa;text-decoration:none;">xfey/ContextOS ↗</a></div>
+        </div>
+        <div class="project-desc">「AI-Centric Proactive Agent Framework」。以 AI 为中心设计 OS 级别的 Agent 框架，把 AI 从「等命令」变成「主动服务」。已有 macOS 演示 App。</div>
+        <br>
+        <div class="tags"><span class="tag green">框架</span><span class="tag">macOS</span><span class="tag">最新</span></div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/ErlichLiu/Proma" target="_blank" style="color:#a78bfa;text-decoration:none;">ErlichLiu/Proma ↗</a></div>
+        </div>
+        <div class="project-desc">基于 Claude Agent SDK 的完整开源实践，正在实现 proactive Agent 阶段。原生支持飞书群聊，可接入任意 LLM。国内团队出品。</div>
+        <br>
+        <div class="tags"><span class="tag orange">Claude SDK</span><span class="tag">飞书</span><span class="tag">国内</span></div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/NevaMind-AI/memU" target="_blank" style="color:#a78bfa;text-decoration:none;">NevaMind-AI/memU ↗</a></div>
+        </div>
+        <div class="project-desc">专为 24/7 proactive agents 设计的记忆系统（如 OpenClaw 类产品）。解决 memory 层难题。</div>
+        <br>
+        <div class="tags"><span class="tag purple">Memory</span><span class="tag">24/7</span></div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-name"><a href="https://github.com/saolalab/clawforce" target="_blank" style="color:#a78bfa;text-decoration:none;">saolalab/clawforce ↗</a></div>
+        </div>
+        <div class="project-desc">持久化、主动执行复杂工作流的 Agent 基础设施，支持 Agent 团队协作，无需人工持续监督。</div>
+        <br>
+        <div class="tags"><span class="tag green">基础设施</span><span class="tag">多 Agent</span></div>
+      </div>
+    </div>
+
+    <!-- 论文 & 工具链接 -->
+    <div style="margin-top:24px;">
+      <div class="section-header" style="margin-bottom:16px;">
+        <div class="section-icon icon-blue">📄</div>
+        <div><h2 style="font-size:1.05rem;">论文 & 工具</h2></div>
+      </div>
+      <div class="grid-2">
+        <div class="card" style="padding:18px 20px;">
+          <h3 style="font-size:0.9rem;margin-bottom:10px;">论文</h3>
+          <p style="font-size:0.85rem;line-height:2;">
+            <a href="https://arxiv.org/abs/2501.00383" target="_blank" style="color:#60a5fa;text-decoration:none;">↗ Inner Thoughts 框架（CHI 2025）</a><br>
+            <a href="https://arxiv.org/abs/2603.07670" target="_blank" style="color:#60a5fa;text-decoration:none;">↗ LLM Agent Memory 综述（2026-03）</a>
+          </p>
+        </div>
+        <div class="card" style="padding:18px 20px;">
+          <h3 style="font-size:0.9rem;margin-bottom:10px;">工具 / 平台</h3>
+          <p style="font-size:0.85rem;line-height:2;">
+            <a href="https://n8n.io" target="_blank" style="color:#34d399;text-decoration:none;">↗ n8n（工作流自动化）</a><br>
+            <a href="https://github.com/pydantic/pydantic-ai" target="_blank" style="color:#34d399;text-decoration:none;">↗ PydanticAI</a><br>
+            <a href="https://architect.salesforce.com/docs/architect/fundamentals/guide/agentic-patterns" target="_blank" style="color:#34d399;text-decoration:none;">↗ Salesforce Agentforce 文档</a><br>
+            <a href="https://apify.com" target="_blank" style="color:#34d399;text-decoration:none;">↗ Apify（信号采集）</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 7: 企业级实践 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-orange">🏢</div>
+      <div>
+        <h2>企业级实践：Salesforce Agentforce 解剖</h2>
+        <span>最完整的 Event-Driven Proactive Agent 架构案例</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>三层架构：Senses + Orchestration + Brain</h3>
+      <p>
+        <strong>① Senses（感官）</strong> = Platform Events + CDC：数据库变化自动推送给 Agent，不轮询。<br>
+        <strong>② Orchestrator（编排）</strong> = Salesforce Flow：提供确定性逻辑和安全护栏，决定什么时候让 AI 介入。<br>
+        <strong>③ Brain（大脑）</strong> = Invocable Apex + Agentforce Reasoning：复杂分析 + AI 推理。<br><br>
+        核心洞察：<strong>Flow 提供确定性，AI 提供灵活性。两者结合才能既安全又智能。</strong> 不要让 AI 直接处理退款流程，而是让 AI 决策、Flow 执行。
+      </p>
+    </div>
+
+    <div class="insight warn">
+      <span class="insight-icon">⚠️</span>
+      <div class="insight-text">
+        <strong>生产警告：</strong>「工作在 demo 上成功」不是发布策略。Agentix Labs 总结：tool-calling agent 的生产失败通常很无聊但代价昂贵——错误工具选择、参数错误、重试循环消耗算力、静默数据损坏。<strong>必须在发布前建立评估门槛（6 维度：任务成功率、工具正确率、基础性、安全合规、延迟可靠性、单次任务成本）</strong>。
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8: 对 Nicole 的建议 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🧭</div>
+      <div>
+        <h2>结合你的场景：选哪种方式？</h2>
+        <span>基于公理 C03（机会在过去的生活）+ K01（认知不对称）</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>🟢 已在用：Schedule-Based</h3>
+        <p>本项目的 observer.py（每天 23:00）+ reflector.py（每周一 9:30）就是定时触发。这是最快落地的方式，已经验证可行。<br><br>
+        <strong>下一步：</strong>积累几周数据后，看 OBSERVATIONS.md 里哪些模式值得变成公理。</p>
+      </div>
+      <div class="card">
+        <h3>🔵 可考虑加：Event-Driven</h3>
+        <p>为 Reddit 账号、Substack、deckcleaner/linkertube 的关键事件（新用户注册、帖子被评论、karma 达到阈值）加上 Webhook 触发。<br><br>
+        <strong>工具：</strong>n8n（本地部署）或 Zapier（快速验证），连接到 OpenClaw。</p>
+      </div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">🎯</span>
+      <div class="insight-text">
+        <strong>核心判断：</strong>Proactive Agent 的价值不在于「技术有多复杂」，而在于<strong>「减少了多少用户的认知负担」</strong>。从用户视角出发（K01 认知不对称），优先让 Agent 处理你最不想思考的重复判断，而不是追求最先进的架构。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  调研报告 by Qing · 2026-03-23 · 基于 GitHub / arXiv / Medium / LinkedIn / Salesforce Docs 多源综合
+</div>
+
+</body>
+</html>
