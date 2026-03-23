@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在 OpenClaw 里搭建 AI 长期记忆系统 · 零基础指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink:   #E8559A;
+    --purple: #7B52D3;
+    --blue:   #2BAEE8;
+    --green:  #10b981;
+    --orange: #f59e0b;
+    --ink:    #111118;
+    --mid:    #333344;
+    --dim:    #666677;
+    --light:  #999aaa;
+    --bg:     #F8F8FC;
+    --white:  #FFFFFF;
+    --border: #E2E2EE;
+    --code-bg:#F0F0F8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 64px 52px 100px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 48px 0 56px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--purple);
+    font-weight: 700;
+    background: #f0ebff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 22px;
+  }
+  .hero-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.25;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .hero-title .grad {
+    background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--dim);
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.75;
+  }
+  .hero-meta {
+    font-size: 12px;
+    color: var(--light);
+  }
+  .hero-meta span { margin: 0 12px; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 52px;
+  }
+  .toc-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 16px;
+  }
+  .toc ol {
+    padding-left: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 32px;
+  }
+  .toc li {
+    font-size: 14px;
+    color: var(--purple);
+    line-height: 1.6;
+  }
+  .toc li a {
+    color: var(--purple);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .toc li a:hover { text-decoration: underline; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 60px; }
+
+  .section-num {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--purple);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 28px 0 10px;
+    padding-left: 12px;
+    border-left: 3px solid var(--purple);
+  }
+  h3.pink   { border-color: var(--pink); }
+  h3.blue   { border-color: var(--blue); }
+  h3.green  { border-color: var(--green); }
+  h3.orange { border-color: var(--orange); }
+
+  p { color: var(--mid); margin-bottom: 14px; line-height: 1.85; }
+  strong { color: var(--ink); font-weight: 600; }
+  em { color: var(--purple); font-style: normal; font-weight: 500; }
+
+  /* ── Callout ── */
+  .callout {
+    background: linear-gradient(135deg, #f5f0ff, #f0f8ff);
+    border: 1px solid #d4c5f9;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.7;
+  }
+  .callout strong { color: var(--purple); }
+  .callout-green {
+    background: linear-gradient(135deg, #edfff8, #f0fff4);
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    font-size: 14px;
+    color: var(--mid);
+  }
+  .callout-green strong { color: var(--green); }
+  .callout-orange {
+    background: linear-gradient(135deg, #fffbeb, #fff7ed);
+    border: 1px solid #fcd34d;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    font-size: 14px;
+    color: var(--mid);
+  }
+  .callout-orange strong { color: var(--orange); }
+
+  /* ── Code ── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    color: var(--purple);
+    padding: 2px 7px;
+    border-radius: 5px;
+  }
+  pre {
+    background: #1c1c2e;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 16px 0;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+  pre code {
+    background: transparent;
+    color: #c9d1d9;
+    padding: 0;
+    font-size: 13px;
+  }
+  .hl-comment { color: #6a737d; }
+  .hl-key    { color: #79c0ff; }
+  .hl-str    { color: #a5d6ff; }
+  .hl-punct  { color: #ffa657; }
+  .hl-head   { color: #ff7b72; }
+
+  /* ── File tree ── */
+  .filetree {
+    background: #1c1c2e;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin: 18px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+    color: #c9d1d9;
+  }
+  .ft-dir   { color: #79c0ff; font-weight: 500; }
+  .ft-core  { color: #ffa657; }
+  .ft-mem   { color: #7ee787; }
+  .ft-dim   { color: #6a737d; }
+  .ft-label {
+    display: inline-block;
+    margin-left: 12px;
+    font-size: 11px;
+    color: #6a737d;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  /* ── Step cards ── */
+  .steps { display: flex; flex-direction: column; gap: 20px; margin: 20px 0; }
+  .step {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .step-num {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex-shrink: 0;
+    line-height: 1;
+    width: 36px;
+    text-align: center;
+  }
+  .step-content { flex: 1; }
+  .step-title { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .step-body { font-size: 14px; color: var(--mid); line-height: 1.7; }
+  .step-body ul { padding-left: 18px; margin-top: 8px; }
+  .step-body li { margin-bottom: 4px; }
+
+  /* ── Flow diagram ── */
+  .flow {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin: 18px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 2;
+    overflow-x: auto;
+  }
+  .fc-purple { color: var(--purple); font-weight: 600; }
+  .fc-pink   { color: var(--pink);   font-weight: 600; }
+  .fc-blue   { color: var(--blue);   font-weight: 600; }
+  .fc-green  { color: var(--green);  font-weight: 600; }
+  .fc-orange { color: var(--orange); font-weight: 600; }
+  .fc-dim    { color: var(--light); }
+
+  /* ── File cards ── */
+  .file-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+  .file-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .file-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .fc-required::before { background: var(--orange); }
+  .fc-custom::before   { background: var(--purple); }
+  .fc-memory::before   { background: var(--green); }
+
+  .fc-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .fc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .b-req  { background: #fff7ed; color: var(--orange); }
+  .b-cus  { background: #f5f0ff; color: var(--purple); }
+  .b-mem  { background: #edfff8; color: var(--green); }
+  .fc-desc { font-size: 12px; color: var(--dim); line-height: 1.6; }
+
+  /* ── Table ── */
+  .table-wrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 18px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--code-bg);
+    color: var(--dim);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 11px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 11px 16px;
+    color: var(--mid);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.65;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafe; }
+  td strong { color: var(--ink); }
+
+  /* ── FAQ ── */
+  .faq { margin: 20px 0; }
+  .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: var(--white);
+    overflow: hidden;
+  }
+  .faq-q {
+    padding: 16px 20px;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .faq-q::before {
+    content: 'Q';
+    background: var(--purple);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .faq-a {
+    padding: 0 20px 16px 52px;
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.75;
+  }
+
+  /* divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+</style>
+</head>
+<body>
+<nav style="position:sticky;top:0;z-index:100;background:rgba(15,17,23,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #2a2d45;padding:12px 24px;display:flex;gap:8px;align-items:center;font-size:13px;font-family:-apple-system,system-ui,sans-serif;">
+  <span style="color:#7c6ff7;font-weight:700;margin-right:8px;">🗂 Nicole Research</span>
+  <a href="/index.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">Proactive Agent 报告</a>
+  <a href="/openclaw-memory-guide.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">OpenClaw Memory 指南</a>
+  <a href="/sitesfy-mvp.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">Sitesfy MVP 功能对比</a>
+</nav>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">OpenClaw · 系统搭建指南</div>
+    <div class="hero-title">
+      给 AI 一个<span class="grad">真正的记忆</span><br/>从零搭建长期对话系统
+    </div>
+    <div class="hero-sub">
+      AI 默认没有记忆——每次对话都是全新开始。<br/>
+      这份指南教你用 OpenClaw 的文件系统，让 AI 记住你是谁、你在做什么、你们谈过什么。
+    </div>
+    <div class="hero-meta">
+      <span>适合人群：零基础小白</span>
+      <span>阅读时间：约 15 分钟</span>
+      <span>2026-03-23</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">目录</div>
+    <ol>
+      <li><a href="#s1">先理解这套系统是什么</a></li>
+      <li><a href="#s2">文件结构总览</a></li>
+      <li><a href="#s3">核心文件怎么写</a></li>
+      <li><a href="#s4">记忆分层机制</a></li>
+      <li><a href="#s5">每天自动更新：Heartbeat</a></li>
+      <li><a href="#s6">从零开始搭建步骤</a></li>
+      <li><a href="#s7">常见问题</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <div class="section-num">01 · 先理解这套系统</div>
+    <h2>AI 为什么会"失忆"？</h2>
+    <p>普通的 AI 对话就像每次都见一个陌生人——你们聊完，关掉窗口，下次它完全不记得你是谁。这对偶尔问问题没问题，但如果你想让 AI 真正成为你的工作搭档，这就是最大的障碍。</p>
+
+    <p>OpenClaw 的解决方案很简单：<strong>让 AI 读文件来"想起"你</strong>。每次会话开始，AI 读取你在工作区写好的文件，里面有你的背景、项目状态、之前的决定——这就是它的"记忆"。</p>
+
+    <div class="callout">
+      <strong>核心原理：</strong>记忆不在 AI 的脑子里，在你的文件里。<br/>
+      每次会话开始 → AI 读文件 → 知道上次聊到哪 → 继续推进。<br/>
+      每次会话结束 → AI 写文件 → 把重要内容存下来 → 供下次读取。
+    </div>
+
+    <h3>这套系统能做什么</h3>
+    <p>搭好之后，你的 AI 搭档可以：</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">①</div>
+        <div class="step-content">
+          <div class="step-title">记住你是谁</div>
+          <div class="step-body">你的背景、工作习惯、沟通偏好——AI 每次都知道，不用重复介绍自己。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">②</div>
+        <div class="step-content">
+          <div class="step-title">跟踪你的项目</div>
+          <div class="step-body">每个项目的进展、关键决策、待办事项——AI 能持续跟进，不用每次从头说。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">③</div>
+        <div class="step-content">
+          <div class="step-title">从对话中学习</div>
+          <div class="step-body">你纠正它、给它反馈、告诉它你的偏好——它会写进文件，下次自动改进。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">④</div>
+        <div class="step-content">
+          <div class="step-title">每天主动检查</div>
+          <div class="step-body">设置定时任务，AI 每天自动扫描你的文件、发现问题或提醒，给你发报告。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <div class="section-num">02 · 文件结构总览</div>
+    <h2>工作区长什么样</h2>
+    <p>OpenClaw 有一个专属的工作目录（默认在 <code>~/.openclaw/workspace/</code>）。AI 在工作时会读写这里的文件。整个结构分两层：<strong>根目录的核心文件</strong>（AI 每次都会读）和 <strong>memory 目录</strong>（按需读取的详细记录）。</p>
+
+    <div class="filetree">
+<span class="ft-dir">~/.openclaw/workspace/</span>
+│
+├── <span class="ft-core">SOUL.md</span>        <span class="ft-label">← AI 的人格设定（它是谁、说话风格）</span>
+├── <span class="ft-core">USER.md</span>        <span class="ft-label">← 你是谁（背景、偏好、沟通方式）</span>
+├── <span class="ft-core">AGENTS.md</span>      <span class="ft-label">← 工作流程（怎么启动、怎么记忆、怎么协作）</span>
+├── <span class="ft-core">REDLINES.md</span>    <span class="ft-label">← 安全边界（AI 绝对不做的事）</span>
+├── <span class="ft-core">IDENTITY.md</span>    <span class="ft-label">← AI 的基本身份信息</span>
+├── <span class="ft-core">TOOLS.md</span>       <span class="ft-label">← 你的工具配置备注</span>
+├── <span class="ft-core">HEARTBEAT.md</span>   <span class="ft-label">← 每日定时任务的执行脚本</span>
+├── <span class="ft-mem">MEMORY.md</span>       <span class="ft-label">← 长期精炼记忆（最重要的历史信息）</span>
+├── PROJECTS.md     <span class="ft-label">← 所有项目的索引</span>
+│
+└── <span class="ft-dir">memory/</span>         <span class="ft-label">← 详细记忆目录</span>
+    ├── <span class="ft-mem">2026-03-23.md</span>   <span class="ft-label">← 今天的日报</span>
+    ├── <span class="ft-mem">2026-03-22.md</span>   <span class="ft-label">← 昨天的日报</span>
+    ├── <span class="ft-dir">logs/</span>           <span class="ft-label">← 重要对话的原始记录</span>
+    │   └── <span class="ft-dim">2026-03-23-项目名.md</span>
+    ├── <span class="ft-mem">noa-patterns.md</span>  <span class="ft-label">← AI 的行为规则（从反馈中提炼）</span>
+    ├── <span class="ft-mem">steve-patterns.md</span> <span class="ft-label">← 用户的习惯和特征（AI 观察记录）</span>
+    └── <span class="ft-dir">projects/</span>       <span class="ft-label">← 按项目分类的详细文档</span>
+        └── <span class="ft-dir">项目名/</span>
+            ├── main.md         <span class="ft-label">← 项目主文档</span>
+            └── <span class="ft-dir">logs/</span>   <span class="ft-label">← 项目专属对话记录</span>
+    </div>
+
+    <div class="callout-orange">
+      <strong>注意：</strong>根目录里 <code>SOUL.md</code> / <code>USER.md</code> / <code>AGENTS.md</code> / <code>REDLINES.md</code> / <code>IDENTITY.md</code> / <code>TOOLS.md</code> / <code>HEARTBEAT.md</code> 这7个文件是 OpenClaw 会自动注入的，<strong>文件名不能改、不能删</strong>。其他文件都可以自由调整。
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <div class="section-num">03 · 核心文件怎么写</div>
+    <h2>每个文件写什么</h2>
+
+    <div class="file-cards">
+      <div class="file-card fc-required">
+        <div class="fc-filename">SOUL.md</div>
+        <div class="fc-badge b-req">必填</div>
+        <div class="fc-desc">AI 的人格设定。写它叫什么名字、是什么风格、和你是什么关系。这决定了它说话的方式。</div>
+      </div>
+      <div class="file-card fc-required">
+        <div class="fc-filename">USER.md</div>
+        <div class="fc-badge b-req">必填</div>
+        <div class="fc-desc">你是谁。写你的名字、时区、工作背景、沟通偏好。AI 每次都会读，不需要自我介绍。</div>
+      </div>
+      <div class="file-card fc-required">
+        <div class="fc-filename">AGENTS.md</div>
+        <div class="fc-badge b-req">必填</div>
+        <div class="fc-desc">工作规则。写 AI 每次启动读哪些文件、如何写记忆、什么情况下要问你确认。</div>
+      </div>
+      <div class="file-card fc-required">
+        <div class="fc-filename">REDLINES.md</div>
+        <div class="fc-badge b-req">必填</div>
+        <div class="fc-desc">安全边界。写 AI 绝对不能做的事，比如不发文件给第三方、不修改生产环境等。</div>
+      </div>
+      <div class="file-card fc-memory">
+        <div class="fc-filename">MEMORY.md</div>
+        <div class="fc-badge b-mem">长期记忆</div>
+        <div class="fc-desc">最精炼的长期信息。重要决策、关键背景、项目状态——只写最有价值的，保持干净。</div>
+      </div>
+      <div class="file-card fc-memory">
+        <div class="fc-filename">HEARTBEAT.md</div>
+        <div class="fc-badge b-mem">定时任务</div>
+        <div class="fc-desc">每天自动执行的检查脚本。告诉 AI 每天扫描哪些文件、发现什么问题、怎么通知你。</div>
+      </div>
+    </div>
+
+    <h3>SOUL.md 示例写法</h3>
+    <pre><code><span class="hl-head"># SOUL.md - 我的 AI 搭档</span>
+
+<span class="hl-comment">## 名字</span>
+我叫 <span class="hl-str">Aria</span>，是你的工作搭档。
+
+<span class="hl-comment">## 风格</span>
+- 直接，不废话，不奉承
+- 有主见，敢于说真话
+- 先做，不确定时再问
+- 用中文回复，遇到技术词汇可以英文
+
+<span class="hl-comment">## 和你的关系</span>
+对等视角。不是助手，是 copilot。
+你的时间贵，我不重复你已知的东西。</code></pre>
+
+    <h3>USER.md 示例写法</h3>
+    <pre><code><span class="hl-head"># USER.md - 关于我</span>
+
+- <span class="hl-key">名字</span>：张伟 / Wei
+- <span class="hl-key">时区</span>：Asia/Shanghai (GMT+8)
+- <span class="hl-key">语言</span>：中英混用
+
+<span class="hl-comment">## 工作背景</span>
+独立创始人，做 SaaS 产品，一人公司。
+
+<span class="hl-comment">## 沟通偏好</span>
+- 回复要短，先给结论
+- 不要问可以自己查到的问题
+- 不需要每次都列一堆选项，直接给判断</code></pre>
+
+    <h3>MEMORY.md 示例写法</h3>
+    <pre><code><span class="hl-head"># MEMORY.md - 长期记忆</span>
+
+<span class="hl-comment">## 速览</span>
+- 主项目：ProductX（已上线，付费用户 200+）
+- 工具：Notion 管项目 / Telegram 是主要沟通渠道
+- 重要决定：2026-03 决定聚焦 B2B 客户
+
+<span class="hl-comment">## 项目状态</span>
+ProductX 本月目标：ARR 突破 50 万
+
+<span class="hl-comment">## 重要规则</span>
+- 发任何东西给外部前，必须先问我确认
+- 不主动重启服务器</code></pre>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <div class="section-num">04 · 记忆分层机制</div>
+    <h2>信息怎么流动和沉淀</h2>
+    <p>不是所有对话都值得写进记忆，也不是所有记忆都需要永久保留。这套系统有 4 层，从"临时"到"永久"：</p>
+
+    <div class="flow">
+<span class="fc-dim">一次重要对话结束</span>
+        ↓
+<span class="fc-pink">第一层：原始 Log</span>
+<span class="fc-dim">memory/logs/YYYY-MM-DD-主题.md</span>
+<span class="fc-dim">完整记录，不加工，原汁原味</span>
+        ↓
+<span class="fc-orange">第二层：日报</span>
+<span class="fc-dim">memory/YYYY-MM-DD.md</span>
+<span class="fc-dim">当天所有 log 的汇总，有什么决策、做了什么、有什么结论</span>
+        ↓
+<span class="fc-blue">第三层：项目主文档</span>
+<span class="fc-dim">memory/projects/项目名/main.md</span>
+<span class="fc-dim">项目的最新状态、关键信息、当前进展</span>
+        ↓
+<span class="fc-green">第四层：长期记忆</span>
+<span class="fc-dim">MEMORY.md</span>
+<span class="fc-dim">最有价值的精炼内容，长期保留，定期整理</span>
+    </div>
+
+    <h3>什么对话要写 Log？</h3>
+    <p>不是所有对话都要记录，这样会让文件变得很乱。只记录：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>情况</th><th>要写</th><th>原因</th></tr></thead>
+        <tbody>
+          <tr><td>做了重要决策</td><td>✅ 写 Log</td><td>下次需要知道为什么做了这个决定</td></tr>
+          <tr><td>项目有新进展</td><td>✅ 写 Log</td><td>项目主文档需要更新</td></tr>
+          <tr><td>你纠正了 AI</td><td>✅ 写 Log</td><td>行为规则要更新，防止下次再犯</td></tr>
+          <tr><td>你说了明确偏好</td><td>✅ 写 Log</td><td>AI 需要记住这个偏好</td></tr>
+          <tr><td>纯聊天、问天气</td><td>❌ 不写</td><td>没有长期价值</td></tr>
+          <tr><td>随手问一个问题</td><td>❌ 不写</td><td>不需要跨会话记忆</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="green">告诉 AI 什么时候写</h3>
+    <p>在 <code>AGENTS.md</code> 里写清楚规则，AI 会自动判断。最简单的写法：</p>
+    <pre><code><span class="hl-comment">## 记忆规则</span>
+
+<span class="hl-key">判断"重要对话"的标准：</span>
+- 有决策 → 写 log
+- 有新项目信息 → 写 log  
+- 有行动项 → 写 log
+- 你明确纠正了我 → 立刻写进行为规则文件
+- 纯闲聊 → 不写
+
+<span class="hl-key">写入流程：</span>
+1. 重要对话结束 → 写原始 log 到 memory/logs/
+2. 当天结束 → 汇总进 memory/YYYY-MM-DD.md
+3. 有项目信息 → 更新 memory/projects/项目名/main.md
+4. 有长期价值 → 精炼后更新 MEMORY.md</code></pre>
+
+    <div class="callout-green">
+      <strong>关键原则：</strong>写进文件才算真的记住，停留在对话里会消失。<br/>
+      AI 每次启动时只读文件，不读历史对话。
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <div class="section-num">05 · 每天自动更新：Heartbeat</div>
+    <h2>让 AI 每天主动找你</h2>
+    <p>Heartbeat 是 OpenClaw 内置的定时任务机制。你在 <code>HEARTBEAT.md</code> 里写好"每天要做什么"，OpenClaw 会在指定时间自动触发 AI 执行，然后把结果发给你（通过 Telegram 或其他渠道）。</p>
+
+    <h3>HEARTBEAT.md 怎么写</h3>
+    <pre><code><span class="hl-head"># HEARTBEAT.md</span>
+
+<span class="hl-comment">## 每日扫描任务（每天早上 08:00 执行）</span>
+
+执行以下步骤，完成后通过 Telegram 发报告给我：
+
+<span class="hl-comment">### 步骤</span>
+
+1. <span class="hl-str">检查这些文件有没有问题：</span>
+   - MEMORY.md（内容过时了吗？）
+   - memory/projects/*/main.md（项目状态准确吗？）
+
+2. <span class="hl-str">检查维度：</span>
+   - 内容过时（路径错误、已完成的待办还在）
+   - 逻辑矛盾（两处规则冲突）
+   - 缺失信息（重要内容为空）
+
+3. <span class="hl-str">生成报告，发送到 Telegram：</span>
+
+格式：
+📋 每日扫描报告
+日期：YYYY-MM-DD
+
+有 X 条建议：
+1. [文件名] 问题 → 建议改动
+
+<span class="hl-comment">### 注意</span>
+- 只提建议，不自动修改——等我确认
+- 没有任何问题时，只回复：HEARTBEAT_OK</code></pre>
+
+    <h3 class="blue">如何设置定时触发</h3>
+    <p>在 OpenClaw 的设置里，找到 <strong>Heartbeat / 定时任务</strong>，设置触发时间即可。OpenClaw 会在每天指定时间自动发送心跳提示给 AI，AI 会按照 <code>HEARTBEAT.md</code> 的指令执行。</p>
+
+    <div class="callout">
+      <strong>实际效果：</strong>你每天早上打开 Telegram，收到 AI 发来的一条报告：<br/>
+      "昨天的会议记录已整理好，项目 A 有两个待办还没完成，需要处理吗？"<br/>
+      不需要你去找信息，信息主动找你。
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <div class="section-num">06 · 从零开始搭建</div>
+    <h2>10步完整流程</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">安装 OpenClaw，连接你的 AI 渠道</div>
+          <div class="step-body">官网下载安装，配置好 Telegram 或其他消息渠道作为主要交互入口。确保能和 AI 正常对话。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">写 SOUL.md：给 AI 设定人格</div>
+          <div class="step-body">参考上面的示例，写 AI 的名字、风格、和你的关系。这是最有趣的一步——AI 说话的方式完全由你决定。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">写 USER.md：告诉 AI 你是谁</div>
+          <div class="step-body">填写你的基本信息：名字、时区、工作背景、沟通偏好。越详细越好——这是 AI 每次都会读的底层信息。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">写 AGENTS.md：定义工作规则</div>
+          <div class="step-body">写 AI 每次启动要读哪些文件、什么时候写记忆、什么操作需要问你确认。参考上面的示例，可以先用简单版本。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">写 REDLINES.md：设安全边界</div>
+          <div class="step-body">
+            至少写几条核心红线：
+            <ul>
+              <li>发文件给任何人前必须先问我</li>
+              <li>不动生产环境</li>
+              <li>不编造数据</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">创建 memory/ 目录结构</div>
+          <div class="step-body">在工作区创建 <code>memory/</code> 目录，里面建 <code>logs/</code> 和 <code>projects/</code> 两个子目录。暂时是空的没关系。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">写初始 MEMORY.md</div>
+          <div class="step-body">把你目前最重要的信息写进去：正在做的项目、重要决定、需要 AI 永远记住的偏好。10-20条就够了，保持精炼。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <div class="step-title">开始第一次会话，验证系统</div>
+          <div class="step-body">和 AI 对话，看它是否正确读取了你的文件、是否了解你的背景。如果有偏差，回去修改对应文件，重新测试。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">9</div>
+        <div class="step-content">
+          <div class="step-title">写 HEARTBEAT.md，设置定时任务</div>
+          <div class="step-body">参考上面示例，写好每天 AI 要做的检查和通知。在 OpenClaw 设置里启用 Heartbeat，设置触发时间。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">10</div>
+        <div class="step-content">
+          <div class="step-title">持续使用，让系统自然生长</div>
+          <div class="step-body">每次对话后，重要的内容 AI 会自动写入记忆。你纠正它时，它会更新行为规则。时间越长，系统越了解你——这就是飞轮。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <div class="section-num">07 · 常见问题</div>
+    <h2>FAQ</h2>
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q">AI 会不会自动乱改我的文件？</div>
+        <div class="faq-a">不会，前提是你在 AGENTS.md 里写清楚规则：修改核心文件（MEMORY.md、AGENTS.md等）前必须先给你看 diff，等你确认才执行。AI 会遵守这个规则。日报、log 等临时文件可以直接写，不需要确认。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">文件写多长合适？不会让 AI 读太多东西吗？</div>
+        <div class="faq-a">每次启动 AI 只读几个核心文件（SOUL、USER、AGENTS、REDLINES + 今天和昨天的日报）。其他文件按需加载——只有在讨论某个项目时才读那个项目的文档。核心文件保持精炼，每个控制在 100-200 行以内比较好。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">多个项目怎么管理？</div>
+        <div class="faq-a">每个项目在 <code>memory/projects/</code> 下建一个目录，里面放 <code>main.md</code>（项目主文档）。在 PROJECTS.md 里维护所有项目的索引。AI 只有在你主动讨论某个项目时才加载对应文件，不会把所有项目信息都混在一起。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">可以让多个 AI 共用这套记忆吗？</div>
+        <div class="faq-a">可以。同一个 OpenClaw 工作区，不管是主对话还是你派出的 sub-agent（子代理），都能读取同一套文件。但要注意：主 AI 负责维护记忆，子 AI 只做执行任务，别让子 AI 乱改核心文件。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">MEMORY.md 和每天的日报有什么区别？</div>
+        <div class="faq-a">日报是"流水账"——今天发生了什么，不加工，完整记录。MEMORY.md 是"精华"——从几十条日报里提炼出来真正有长期价值的内容，比如重要决策、关键偏好、项目里程碑。日报会越来越多，MEMORY.md 保持精炼。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Heartbeat 一定要用 Telegram 吗？</div>
+        <div class="faq-a">不是。OpenClaw 支持多种渠道，你在 HEARTBEAT.md 里指定发到哪个渠道就好。Telegram 比较常用是因为通知及时，但也可以用其他已配置的渠道。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">从零开始大概要花多少时间搭建？</div>
+        <div class="faq-a">核心文件（SOUL、USER、AGENTS、REDLINES、初始 MEMORY）写好大约需要 1-2 小时。Heartbeat 配置再花 30 分钟。之后的 memory 目录会随着使用自然生长，不需要额外维护。系统搭好后，日常只需要和 AI 正常对话就行。</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- Footer callout -->
+  <div class="callout-green" style="text-align:center;padding:28px 32px;">
+    <strong style="font-size:15px;display:block;margin-bottom:8px;">这套系统的本质</strong>
+    <span style="font-size:14px;color:var(--mid);line-height:1.8;">
+      AI 的记忆不是魔法，是文件。<br/>
+      你写好文件，AI 读进去，对话结束写出来，下次再读进去——<br/>
+      这个循环跑起来，就是真正意义上的"长期搭档"。
+    </span>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:28px;margin-top:48px;font-size:12px;color:var(--light);text-align:center;">
+    OpenClaw 记忆系统搭建指南 · 2026-03-23
+  </div>
+
+</div>
+</body>
+</html>
