@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitesfy · LinkedIn API 方案对比</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --pink: #E8559A; --purple: #7B52D3; --blue: #2BAEE8;
+    --green: #10b981; --orange: #f59e0b; --red: #ef4444;
+    --ink: #111118; --mid: #333344; --dim: #666677; --light: #999aaa;
+    --bg: #F8F8FC; --white: #FFFFFF; --border: #E2E2EE;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans SC','PingFang SC',sans-serif; font-size: 14px; line-height: 1.7; }
+  .page { max-width: 900px; margin: 0 auto; padding: 60px 48px 100px; }
+
+  .doc-eyebrow { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--purple); font-weight: 600; margin-bottom: 14px; }
+  .doc-title { font-family: 'Noto Serif SC',serif; font-size: 34px; font-weight: 900; line-height: 1.2; letter-spacing: -1px; margin-bottom: 10px; }
+  .doc-title .grad { background: linear-gradient(90deg, var(--blue), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .doc-sub { font-size: 15px; color: var(--dim); margin-bottom: 28px; }
+  .doc-meta { display: flex; gap: 28px; font-size: 12px; color: var(--light); padding-bottom: 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+  .doc-meta span strong { color: var(--mid); font-weight: 500; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); margin: 24px 0 40px; }
+  table { width: 100%; border-collapse: collapse; background: var(--white); }
+  th { background: #f1f3f8; color: var(--mid); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 14px 18px; text-align: left; font-weight: 700; }
+  td { padding: 14px 18px; border-top: 1px solid var(--border); font-size: 13px; color: var(--mid); vertical-align: top; line-height: 1.6; }
+  tr:hover td { background: #f8f6ff; }
+  td:first-child { font-weight: 700; color: var(--ink); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 10px; white-space: nowrap; }
+  .b-rec { background: #edf9f0; color: #059669; border: 1px solid #a7f3d0; }
+  .b-test { background: #fff8e0; color: #b45309; border: 1px solid #fcd34d; }
+  .b-hard { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+  .b-risk { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+  /* Section */
+  .section { margin-bottom: 44px; }
+  .section-title { font-family: 'Noto Serif SC',serif; font-size: 19px; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .stripe { width: 4px; height: 20px; border-radius: 2px; flex-shrink: 0; }
+  .s-blue { background: var(--blue); }
+  .s-purple { background: var(--purple); }
+  .s-green { background: var(--green); }
+  .s-orange { background: var(--orange); }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 22px; position: relative; overflow: hidden; }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .card.blue::before { background: var(--blue); }
+  .card.purple::before { background: var(--purple); }
+  .card.orange::before { background: var(--orange); }
+  .card.green::before { background: var(--green); }
+  .card.red::before { background: var(--red); }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .card .sub { font-size: 11px; color: var(--dim); margin-bottom: 12px; letter-spacing: 0.5px; }
+  .card p { font-size: 13px; color: var(--mid); line-height: 1.65; margin-bottom: 10px; }
+  .card .cost { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--green); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 8px; background: var(--bg); color: var(--dim); border: 1px solid var(--border); }
+
+  /* Insight */
+  .insight { border-radius: 12px; padding: 18px 22px; margin-bottom: 16px; display: flex; gap: 14px; }
+  .insight.key { background: #f0eeff; border: 1px solid #c4b5fd; }
+  .insight.warn { background: #fff8e0; border: 1px solid #fcd34d; }
+  .insight.tip { background: #ecfdf5; border: 1px solid #a7f3d0; }
+  .insight-icon { font-size: 1.15rem; flex-shrink: 0; margin-top: 2px; }
+  .insight-text { font-size: 13px; color: var(--mid); line-height: 1.7; }
+  .insight-text strong { color: var(--ink); }
+
+  /* Flow */
+  .flow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+  .flow-step { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .flow-arrow { color: var(--light); font-size: 1.1rem; }
+
+  footer { text-align: center; padding: 32px; color: var(--light); font-size: 12px; border-top: 1px solid var(--border); margin-top: 60px; background: #f1f3f8; }
+</style>
+</head>
+<body>
+
+<nav style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #e2e6f0;padding:12px 24px;display:flex;gap:8px;align-items:center;font-size:13px;font-family:-apple-system,system-ui,sans-serif;">
+  <span style="color:#6355e8;font-weight:700;margin-right:8px;">🗂 Nicole Research</span>
+  <a href="/index.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">Proactive Agent 报告</a>
+  <a href="/openclaw-memory-guide.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">OpenClaw Memory 指南</a>
+  <a href="/sitesfy-mvp.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">Sitesfy MVP 功能对比</a>
+  <a href="/sitesfy-linkedin-api.html" style="color:#6355e8;text-decoration:none;padding:5px 12px;border-radius:6px;background:rgba(99,85,232,0.08);font-weight:600;">LinkedIn API 方案</a>
+</nav>
+
+<div class="page">
+
+  <div class="doc-eyebrow">Sitesfy · 技术选型</div>
+  <h1 class="doc-title">LinkedIn <span class="grad">API 方案对比</span></h1>
+  <p class="doc-sub">四种接入方式全面评估 + 针对桌游出海场景的落地建议</p>
+  <div class="doc-meta">
+    <span><strong>版本</strong> v1.0</span>
+    <span><strong>日期</strong> 2026-03-23</span>
+    <span><strong>场景</strong> Sitesfy · 义乌桌游公司 Outbound</span>
+  </div>
+
+  <!-- 四种方案卡片 -->
+  <div class="section">
+    <div class="section-title"><div class="stripe s-blue"></div>四种方案速览</div>
+    <div class="cards">
+      <div class="card blue">
+        <h3>Proxycurl</h3>
+        <div class="sub">推荐 · 最稳定</div>
+        <p>第三方 LinkedIn 数据 API，专为产品集成设计。个人资料、公司信息、搜索、联系方式一站覆盖，有 SLA 保证。</p>
+        <div class="cost">$0.01–0.05 / 请求</div>
+        <div class="tags">
+          <span class="tag">按量付费</span>
+          <span class="tag">Company Search API</span>
+          <span class="badge b-rec">✓ 推荐</span>
+        </div>
+      </div>
+      <div class="card purple">
+        <h3>RapidAPI LinkedIn</h3>
+        <div class="sub">测试阶段可用</div>
+        <p>多个供应商（LinkedIn Data API、Fresh LinkedIn Profile Data 等），价格便宜，适合 MVP 早期测试和概念验证。</p>
+        <div class="cost">更低，按套餐</div>
+        <div class="tags">
+          <span class="tag">多供应商</span>
+          <span class="tag">稳定性参差</span>
+          <span class="badge b-test">○ 测试</span>
+        </div>
+      </div>
+      <div class="card orange">
+        <h3>官方 LinkedIn API</h3>
+        <div class="sub">门槛极高</div>
+        <p>需申请 Marketing Developer Platform 或成为合作伙伴。审核周期长，需要一定规模公司。最稳定但最难拿到。</p>
+        <div class="cost">免费（但难拿）</div>
+        <div class="tags">
+          <span class="tag">需审核</span>
+          <span class="tag">周期长</span>
+          <span class="badge b-hard">✗ 暂缓</span>
+        </div>
+      </div>
+      <div class="card red">
+        <h3>PhantomBuster / Apify</h3>
+        <div class="sub">高风险，不推荐</div>
+        <p>模拟浏览器自动化，非真正 API。批量获取数据但账号随时可能被封，不稳定，Sitesfy 产品层不适合依赖。</p>
+        <div class="cost">月费制</div>
+        <div class="tags">
+          <span class="tag">爬虫</span>
+          <span class="tag">封号风险</span>
+          <span class="badge b-risk">⚠ 风险</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 横向对比表 -->
+  <div class="section">
+    <div class="section-title"><div class="stripe s-purple"></div>横向对比</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>方案</th>
+            <th>稳定性</th>
+            <th>数据完整度</th>
+            <th>成本</th>
+            <th>上手速度</th>
+            <th>Sitesfy 适配</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Proxycurl</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>个人 + 公司 + 搜索</td>
+            <td>$0.01–0.05/请求</td>
+            <td>快（文档清晰）</td>
+            <td><span class="badge b-rec">✓ 生产推荐</span></td>
+          </tr>
+          <tr>
+            <td>RapidAPI</td>
+            <td>⭐⭐⭐</td>
+            <td>部分字段，供应商差异大</td>
+            <td>更低</td>
+            <td>快</td>
+            <td><span class="badge b-test">○ MVP 测试</span></td>
+          </tr>
+          <tr>
+            <td>官方 API</td>
+            <td>⭐⭐⭐⭐⭐</td>
+            <td>最完整</td>
+            <td>免费</td>
+            <td>慢（需审核）</td>
+            <td><span class="badge b-hard">✗ 暂缓</span></td>
+          </tr>
+          <tr>
+            <td>PhantomBuster</td>
+            <td>⭐⭐</td>
+            <td>自定义抓取</td>
+            <td>月费 $56+</td>
+            <td>中等</td>
+            <td><span class="badge b-risk">⚠ 不推荐</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 桌游场景专项建议 -->
+  <div class="section">
+    <div class="section-title"><div class="stripe s-green"></div>🎲 桌游场景专项：找欧洲零售商</div>
+
+    <div class="insight tip">
+      <span class="insight-icon">💡</span>
+      <div class="insight-text">
+        <strong>LinkedIn 之外，这些数据源更直接：</strong>欧洲桌游零售商本身在 LinkedIn 上密度不高，专业渠道覆盖更全。
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card green">
+        <h3>Faire.com</h3>
+        <div class="sub">欧美最大批发平台</div>
+        <p>桌游零售商密度极高，有公开 API。可直接找到买家，比 LinkedIn 更精准。</p>
+        <div class="tags"><span class="tag">公开 API</span><span class="tag">零售商聚集</span></div>
+      </div>
+      <div class="card blue">
+        <h3>Apollo.io</h3>
+        <div class="sub">MVP 已规划接入</div>
+        <p>按 ICP 条件拉取公司 + 联系人，比 Proxycurl 便宜且覆盖更广。Sitesfy MVP 第一期主数据源。</p>
+        <div class="tags"><span class="tag">ICP 筛选</span><span class="tag">邮箱直达</span></div>
+      </div>
+      <div class="card orange">
+        <h3>SPIEL 展商名单</h3>
+        <div class="sub">德国 Essen 桌游展</div>
+        <p>每年公开，欧洲零售商最集中的一手数据源。德国市场验证的天然起点。</p>
+        <div class="tags"><span class="tag">免费</span><span class="tag">德国市场</span><span class="tag">高质量</span></div>
+      </div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">🎯</span>
+      <div class="insight-text">
+        <strong>Proxycurl 最有价值的时机：</strong>找到目标公司名之后，用 Proxycurl 补充「决策人」的 LinkedIn 信息（职位、邮箱线索），配合开发信个性化。Apollo 有时候漏人，Proxycurl 补这一层最准。
+      </div>
+    </div>
+  </div>
+
+  <!-- 推荐执行路径 -->
+  <div class="section">
+    <div class="section-title"><div class="stripe s-orange"></div>推荐执行路径（MVP 阶段）</div>
+
+    <div class="flow">
+      <div class="flow-step">Apollo 拉名单</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Proxycurl 补决策人</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Instantly 发邮件序列</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">回复率反哺 ICP 修正</div>
+    </div>
+
+    <div class="insight warn">
+      <span class="insight-icon">⚠️</span>
+      <div class="insight-text">
+        <strong>LinkedIn 渠道本身延后：</strong>先跑邮件验证 ICP，有足够回复数据再开 LinkedIn 触达序列。MVP 阶段不要同时开多个渠道分散注意力。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Sitesfy 技术选型笔记 · 2026-03-23 · Nicole Research</footer>
+</body>
+</html>

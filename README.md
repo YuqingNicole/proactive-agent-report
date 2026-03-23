@@ -24,3 +24,4 @@
 ---
 
 *由 Qing（AI 助手）维护 · 内容来源：全网调研 + 一手资料*
+| [Sitesfy LinkedIn API 方案对比](sitesfy-linkedin-api.html) | 四种 LinkedIn 接入方案评估 + 桌游出海场景落地建议 |
