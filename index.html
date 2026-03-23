@@ -792,10 +792,61 @@
             <a href="https://n8n.io" target="_blank" style="color:#34d399;text-decoration:none;">↗ n8n（工作流自动化）</a><br>
             <a href="https://github.com/pydantic/pydantic-ai" target="_blank" style="color:#34d399;text-decoration:none;">↗ PydanticAI</a><br>
             <a href="https://architect.salesforce.com/docs/architect/fundamentals/guide/agentic-patterns" target="_blank" style="color:#34d399;text-decoration:none;">↗ Salesforce Agentforce 文档</a><br>
-            <a href="https://apify.com" target="_blank" style="color:#34d399;text-decoration:none;">↗ Apify（信号采集）</a>
+            <a href="https://apify.com" target="_blank" style="color:#34d399;text-decoration:none;">↗ Apify（信号采集）</a> <span style="color:#6b7280;font-size:0.8rem;">— 见下方说明</span>
           </p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Section 6.5: Apify 信号采集说明 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon icon-blue">📡</div>
+      <div>
+        <h2>Apify 作为信号层：是什么意思？</h2>
+        <span>Proactive Agent 的「眼睛」</span>
+      </div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">💡</span>
+      <div class="insight-text">
+        <strong>核心问题：Agent 怎么知道外部发生了什么？</strong><br>
+        Proactive Agent 的第一层是信号采集——Agent 需要感知外部变化才能主动行动。Apify 提供现成的「Actor」（爬虫模块），作为 Agent 的感知神经系统。
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>📍 Apify 在架构里的位置</h3>
+        <p style="font-family:'Fira Code',monospace;font-size:0.82rem;line-height:2;color:#6b7280;">
+          Apify（信号采集）<br>
+          &nbsp;&nbsp;&nbsp;↓ 发现变化（新文章/价格/提及）<br>
+          Agent 推理层（这个信号重要吗？）<br>
+          &nbsp;&nbsp;&nbsp;↓ 判断需要行动<br>
+          Action Layer（通知/写文件/调 API）
+        </p>
+      </div>
+      <div class="card">
+        <h3>🎯 具体能监控什么</h3>
+        <p style="font-size:0.88rem;line-height:1.9;">
+          <strong>RSS Feed Reader</strong> — 竞品博客/新闻有新内容<br>
+          <strong>Social Media Monitor</strong> — Twitter/Reddit 关键词提及<br>
+          <strong>Web Scraper</strong> — 价格变化、产品页更新<br>
+          <strong>Google Search Scraper</strong> — 搜索结果排名变化
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3>实际场景举例</h3>
+      <p style="font-size:0.88rem;line-height:1.8;color:#4b5563;">
+        <strong>Sitesfy 桌游出海：</strong>Apify 每天抓欧洲展会参展商名单变化 → 发现新目标公司 → Agent 自动生成个性化开发信<br>
+        <strong>内容运营：</strong>监控竞品发了什么文章 → Agent 自动生成选题建议并推送给你<br>
+        <strong>投资监控：</strong>抓取特定公司的新闻/招聘动态 → 出现异常信号时 Agent 主动提醒<br><br>
+        <strong>本质：</strong>让 Agent 有眼睛看世界，而不是等人告诉它发生了什么。没有信号层，Proactive Agent 只能靠定时轮询盲跑。
+      </p>
     </div>
   </div>
 
