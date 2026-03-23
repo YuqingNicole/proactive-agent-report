@@ -6,19 +6,19 @@
 <title>Proactive Agent 全网调研报告</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --card: #1a1d2e;
-    --card2: #14162a;
-    --border: #2a2d45;
-    --accent: #7c6ff7;
-    --accent2: #5dbaff;
-    --accent3: #52d9b1;
-    --text: #e2e8f0;
-    --muted: #8892a4;
-    --tag-bg: #252840;
-    --red: #ff6b6b;
-    --yellow: #ffd93d;
-    --green: #6bcb77;
+    --bg: #f8f9fc;
+    --card: #ffffff;
+    --card2: #f1f3f8;
+    --border: #e2e6f0;
+    --accent: #6355e8;
+    --accent2: #2563eb;
+    --accent3: #059669;
+    --text: #111827;
+    --muted: #6b7280;
+    --tag-bg: #f1f3f8;
+    --red: #dc2626;
+    --yellow: #d97706;
+    --green: #059669;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,7 +33,7 @@
 
   /* ── Header ── */
   .header {
-    background: linear-gradient(135deg, #12102a 0%, #1a1040 50%, #0d1829 100%);
+    background: linear-gradient(135deg, #f0f1ff 0%, #e8f0fe 50%, #f0f7ff 100%);
     border-bottom: 1px solid var(--border);
     padding: 48px 0 40px;
     text-align: center;
@@ -48,13 +48,13 @@
     transform: translateX(-50%);
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(124,111,247,0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(99,85,232,0.08) 0%, transparent 70%);
     pointer-events: none;
   }
   .header h1 {
     font-size: 2.2rem;
     font-weight: 700;
-    background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+    background: linear-gradient(90deg, #6355e8, #2563eb, #059669);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -62,7 +62,7 @@
     margin-bottom: 10px;
   }
   .header .subtitle {
-    color: var(--muted);
+    color: #6b7280;
     font-size: 0.95rem;
   }
   .header .meta {
@@ -73,12 +73,12 @@
     flex-wrap: wrap;
   }
   .meta-item {
-    background: rgba(124,111,247,0.12);
-    border: 1px solid rgba(124,111,247,0.25);
+    background: rgba(99,85,232,0.08);
+    border: 1px solid rgba(99,85,232,0.2);
     border-radius: 20px;
     padding: 4px 14px;
     font-size: 0.8rem;
-    color: #a78bfa;
+    color: #6355e8;
   }
 
   /* ── Layout ── */
@@ -90,8 +90,8 @@
 
   /* ── TL;DR ── */
   .tldr {
-    background: linear-gradient(135deg, #1a1d3a, #161928);
-    border: 1px solid rgba(124,111,247,0.3);
+    background: linear-gradient(135deg, #f5f3ff, #eff6ff);
+    border: 1px solid rgba(99,85,232,0.2);
     border-radius: 16px;
     padding: 28px 32px;
     margin: 40px 0 36px;
@@ -104,11 +104,11 @@
     margin-bottom: 16px;
   }
   .tldr p {
-    color: #c4cde0;
+    color: #374151;
     font-size: 1.05rem;
     line-height: 1.75;
   }
-  .tldr strong { color: #fff; }
+  .tldr strong { color: #111827; }
 
   /* ── Section ── */
   .section { margin: 48px 0; }
@@ -130,39 +130,39 @@
     font-size: 1.1rem;
     flex-shrink: 0;
   }
-  .icon-purple { background: rgba(124,111,247,0.18); }
+  .icon-purple { background: rgba(99,85,232,0.1); }
   .icon-blue { background: rgba(93,186,255,0.15); }
   .icon-green { background: rgba(82,217,177,0.15); }
   .icon-orange { background: rgba(255,184,0,0.13); }
   .section-header h2 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #fff;
+    color: #111827;
   }
   .section-header span {
     font-size: 0.8rem;
-    color: var(--muted);
+    color: #6b7280;
     font-weight: 400;
   }
 
   /* ── Cards ── */
   .card {
-    background: var(--card);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 24px;
     margin-bottom: 16px;
     transition: border-color 0.2s;
   }
-  .card:hover { border-color: rgba(124,111,247,0.4); }
+  .card:hover { border-color: rgba(99,85,232,0.25); }
   .card h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: #fff;
+    color: #111827;
     margin-bottom: 8px;
   }
   .card p {
-    color: #9aa5b8;
+    color: #4b5563;
     font-size: 0.9rem;
     line-height: 1.65;
   }
@@ -182,7 +182,7 @@
 
   /* ── Approach Cards ── */
   .approach {
-    background: var(--card);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 26px;
@@ -195,7 +195,7 @@
     top: 0; left: 0; right: 0;
     height: 3px;
   }
-  .approach.purple::before { background: linear-gradient(90deg, #7c6ff7, #a78bfa); }
+  .approach.purple::before { background: linear-gradient(90deg, #7c6ff7, #6355e8); }
   .approach.blue::before   { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
   .approach.green::before  { background: linear-gradient(90deg, #10b981, #34d399); }
   .approach.orange::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
@@ -209,7 +209,7 @@
     margin-bottom: 12px;
     opacity: 0.7;
   }
-  .approach.purple .approach-num { color: #a78bfa; }
+  .approach.purple .approach-num { color: #6355e8; }
   .approach.blue .approach-num { color: #60a5fa; }
   .approach.green .approach-num { color: #34d399; }
   .approach.orange .approach-num { color: #fbbf24; }
@@ -218,11 +218,11 @@
   .approach h3 {
     font-size: 1.05rem;
     font-weight: 700;
-    color: #fff;
+    color: #111827;
     margin-bottom: 10px;
   }
   .approach p {
-    color: #9aa5b8;
+    color: #6b7280;
     font-size: 0.88rem;
     line-height: 1.65;
     margin-bottom: 14px;
@@ -233,19 +233,19 @@
   .tag {
     background: var(--tag-bg);
     border: 1px solid var(--border);
-    color: var(--muted);
+    color: #6b7280;
     border-radius: 6px;
     padding: 2px 10px;
     font-size: 0.75rem;
   }
-  .tag.purple { background: rgba(124,111,247,0.12); border-color: rgba(124,111,247,0.3); color: #a78bfa; }
-  .tag.blue { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
-  .tag.green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.3); color: #34d399; }
-  .tag.orange { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: #fbbf24; }
+  .tag.purple { background: rgba(99,85,232,0.08); border-color: rgba(99,85,232,0.2); color: #6355e8; }
+  .tag.blue { background: rgba(37,99,235,0.08); border-color: rgba(59,130,246,0.3); color: #60a5fa; }
+  .tag.green { background: rgba(5,150,105,0.08); border-color: rgba(16,185,129,0.3); color: #34d399; }
+  .tag.orange { background: rgba(217,119,6,0.08); border-color: rgba(245,158,11,0.3); color: #fbbf24; }
 
   /* ── Architecture Diagram ── */
   .arch-diagram {
-    background: var(--card2);
+    background: #f8fafc;
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 28px;
@@ -266,20 +266,20 @@
     white-space: nowrap;
     font-weight: 600;
   }
-  .arch-box.purple { background: rgba(124,111,247,0.15); border-color: rgba(124,111,247,0.4); color: #c4b5fd; }
-  .arch-box.blue { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: #93c5fd; }
-  .arch-box.green { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.4); color: #6ee7b7; }
-  .arch-box.orange { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.4); color: #fcd34d; }
-  .arch-box.pink { background: rgba(236,72,153,0.15); border-color: rgba(236,72,153,0.4); color: #f9a8d4; }
-  .arch-arrow { color: var(--muted); font-size: 1rem; }
-  .arch-label { color: var(--muted); font-size: 0.78rem; font-family: system-ui, sans-serif; }
+  .arch-box.purple { background: rgba(99,85,232,0.1); border-color: rgba(99,85,232,0.25); color: #5b21b6; }
+  .arch-box.blue { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.25); color: #1d4ed8; }
+  .arch-box.green { background: rgba(5,150,105,0.1); border-color: rgba(5,150,105,0.25); color: #065f46; }
+  .arch-box.orange { background: rgba(217,119,6,0.1); border-color: rgba(217,119,6,0.25); color: #92400e; }
+  .arch-box.pink { background: rgba(219,39,119,0.1); border-color: rgba(219,39,119,0.25); color: #9d174d; }
+  .arch-arrow { color: #6b7280; font-size: 1rem; }
+  .arch-label { color: #6b7280; font-size: 0.78rem; font-family: system-ui, sans-serif; }
 
   /* ── Comparison Table ── */
   .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 14px; border: 1px solid var(--border); }
   table { width: 100%; border-collapse: collapse; }
   th {
-    background: #1e2138;
-    color: #94a3b8;
+    background: #f8f9fc;
+    color: #6b7280;
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -290,13 +290,13 @@
   td {
     padding: 14px 18px;
     border-top: 1px solid var(--border);
-    color: #9aa5b8;
+    color: #6b7280;
     font-size: 0.88rem;
     line-height: 1.5;
     vertical-align: top;
   }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  td:first-child { color: #e2e8f0; font-weight: 600; }
+  tr:hover td { background: rgba(99,85,232,0.04); }
+  td:first-child { color: #111827; font-weight: 600; }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
   .dot.green { background: var(--green); }
   .dot.yellow { background: var(--yellow); }
@@ -305,12 +305,12 @@
   /* ── Projects ── */
   .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
   .project-card {
-    background: var(--card);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
   }
-  .project-card:hover { border-color: rgba(124,111,247,0.4); }
+  .project-card:hover { border-color: rgba(99,85,232,0.25); }
   .project-header {
     display: flex;
     align-items: flex-start;
@@ -321,7 +321,7 @@
   .project-name {
     font-size: 0.88rem;
     font-weight: 700;
-    color: #a78bfa;
+    color: #6355e8;
     font-family: 'Fira Code', monospace;
   }
   .project-stars {
@@ -330,7 +330,7 @@
     white-space: nowrap;
   }
   .project-desc {
-    color: #8892a4;
+    color: #6b7280;
     font-size: 0.83rem;
     line-height: 1.55;
   }
@@ -345,62 +345,63 @@
     align-items: flex-start;
   }
   .insight.key {
-    background: rgba(124,111,247,0.08);
-    border: 1px solid rgba(124,111,247,0.25);
+    background: rgba(99,85,232,0.06);
+    border: 1px solid rgba(99,85,232,0.2);
   }
   .insight.warn {
-    background: rgba(245,158,11,0.08);
+    background: rgba(245,158,11,0.06);
     border: 1px solid rgba(245,158,11,0.25);
   }
   .insight.note {
-    background: rgba(16,185,129,0.08);
+    background: rgba(16,185,129,0.06);
     border: 1px solid rgba(16,185,129,0.25);
   }
   .insight-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
-  .insight-text { color: #c4cde0; font-size: 0.9rem; line-height: 1.65; }
-  .insight-text strong { color: #fff; }
+  .insight-text { color: #374151; font-size: 0.9rem; line-height: 1.65; }
+  .insight-text strong { color: #111827; }
 
   /* ── Decision framework ── */
   .decision-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
   .decision-card {
-    background: var(--card2);
+    background: #f8fafc;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 16px;
     text-align: center;
   }
-  .decision-q { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
-  .decision-a { font-size: 0.88rem; font-weight: 600; color: #fff; }
+  .decision-q { font-size: 0.8rem; color: #6b7280; margin-bottom: 8px; }
+  .decision-a { font-size: 0.88rem; font-weight: 600; color: #111827; }
 
   /* ── Footer ── */
   .footer {
     text-align: center;
     padding: 32px;
-    color: var(--muted);
+    color: #6b7280;
     font-size: 0.8rem;
     border-top: 1px solid var(--border);
     margin-top: 60px;
+    background: #f1f3f8;
   }
 
   /* ── Inline code ── */
   code {
-    background: rgba(124,111,247,0.12);
+    background: rgba(99,85,232,0.08);
     border: 1px solid rgba(124,111,247,0.2);
     border-radius: 4px;
     padding: 1px 6px;
     font-size: 0.85em;
     font-family: 'Fira Code', monospace;
-    color: #c4b5fd;
+    color: #5b21b6;
   }
 </style>
 </head>
 <body>
 
-<nav style="position:sticky;top:0;z-index:100;background:rgba(15,17,23,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #2a2d45;padding:12px 24px;display:flex;gap:8px;align-items:center;font-size:13px;font-family:-apple-system,system-ui,sans-serif;">
-  <span style="color:#7c6ff7;font-weight:700;margin-right:8px;">🗂 Nicole Research</span>
-  <a href="/index.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">Proactive Agent 报告</a>
-  <a href="/openclaw-memory-guide.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">OpenClaw Memory 指南</a>
-  <a href="/sitesfy-mvp.html" style="color:#94a3b8;text-decoration:none;padding:5px 12px;border-radius:6px;">Sitesfy MVP 功能对比</a>
+<nav style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border-bottom:1px solid #e2e6f0;padding:12px 24px;display:flex;gap:8px;align-items:center;font-size:13px;font-family:-apple-system,system-ui,sans-serif;">
+  <span style="color:#6355e8;font-weight:700;margin-right:8px;">🗂 Nicole Research</span>
+  <a href="/index.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">Proactive Agent 报告</a>
+  <a href="/openclaw-memory-guide.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">OpenClaw Memory 指南</a>
+  <a href="/sitesfy-mvp.html" style="color:#6b7280;text-decoration:none;padding:5px 12px;border-radius:6px;">Sitesfy MVP 功能对比</a>
 </nav>
 
 <div class="header">
@@ -448,7 +449,7 @@
 
     <div class="insight key">
       <span class="insight-icon">💡</span>
-      <div class="insight-text">
+      <div class="insight-text" style="color:#374151">
         <strong>关键洞察：</strong>Proactive Agent 的难点不是 LLM 能力，而是<strong>激活机制</strong>（Activation）——什么时候叫醒 Agent、用什么上下文、叫醒后做什么。这三个问题决定了一切架构选择。
       </div>
     </div>
@@ -606,7 +607,7 @@
 
     <div class="insight note">
       <span class="insight-icon">🔁</span>
-      <div class="insight-text">
+      <div class="insight-text" style="color:#374151">
         <strong>Memory 是 Proactive Agent 的核心护城河。</strong> 没有跨 session 记忆，Agent 每次唤醒都是「失忆」状态，无法积累用户习惯和偏好。MemGPT（2024）、grapeot context-infrastructure、本项目的 observer/reflector 设计，本质上都是在解决这个问题。
       </div>
     </div>
@@ -819,7 +820,7 @@
 
     <div class="insight warn">
       <span class="insight-icon">⚠️</span>
-      <div class="insight-text">
+      <div class="insight-text" style="color:#374151">
         <strong>生产警告：</strong>「工作在 demo 上成功」不是发布策略。Agentix Labs 总结：tool-calling agent 的生产失败通常很无聊但代价昂贵——错误工具选择、参数错误、重试循环消耗算力、静默数据损坏。<strong>必须在发布前建立评估门槛（6 维度：任务成功率、工具正确率、基础性、安全合规、延迟可靠性、单次任务成本）</strong>。
       </div>
     </div>
@@ -850,7 +851,7 @@
 
     <div class="insight key">
       <span class="insight-icon">🎯</span>
-      <div class="insight-text">
+      <div class="insight-text" style="color:#374151">
         <strong>核心判断：</strong>Proactive Agent 的价值不在于「技术有多复杂」，而在于<strong>「减少了多少用户的认知负担」</strong>。从用户视角出发（K01 认知不对称），优先让 Agent 处理你最不想思考的重复判断，而不是追求最先进的架构。
       </div>
     </div>
