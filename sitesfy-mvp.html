@@ -371,6 +371,71 @@
   @media print {
     .page { padding: 32px; }
   }
+
+  /* ── Scalability Notes ── */
+  .scale-note {
+    display: inline-block;
+    margin-left: 8px;
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #e65100;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  .scale-note.hard {
+    background: #fce4ec;
+    border-color: #f48fb1;
+    color: #c62828;
+  }
+  .scale-note.medium {
+    background: #fff8e1;
+    border-color: #ffd54f;
+    color: #e65100;
+  }
+  .scale-section {
+    background: linear-gradient(135deg, #fff8e1, #fff3e0);
+    border: 2px solid #ffb74d;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 40px 0;
+  }
+  .scale-section h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #bf360c;
+  }
+  .scale-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid #ffe0b2;
+  }
+  .scale-item:last-child { border-bottom: none; }
+  .scale-badge {
+    flex-shrink: 0;
+    background: #fce4ec;
+    border: 1px solid #f48fb1;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #c62828;
+    white-space: nowrap;
+  }
+  .scale-badge.medium {
+    background: #fff8e1;
+    border-color: #ffd54f;
+    color: #e65100;
+  }
+  .scale-title { font-weight: 700; color: #333; font-size: 13px; margin-bottom: 4px; }
+  .scale-reason { font-size: 12px; color: #666; line-height: 1.6; }
+
 </style>
 </head>
 <body>
@@ -904,6 +969,65 @@
 
   <!-- Summary -->
   <div class="summary">
+
+  <!-- Scalability Analysis -->
+  <div class="scale-section">
+    <h3>⚠️ 规模化瓶颈分析：哪些功能无法产品化规模做？</h3>
+
+    <div class="scale-item">
+      <div class="scale-badge">🔴 无法规模化</div>
+      <div>
+        <div class="scale-title">个性化开发信生成（Content Engine）</div>
+        <div class="scale-reason">每封信需要真正个性化才有效。用模板批量生成后回复率会快速下降 → LLM 生成容易被识别为 AI 味，触发垃圾邮件过滤。<strong>瓶颈：邮件质量与发送量之间存在根本性矛盾。</strong>发量越大，质量越难保证。</div>
+      </div>
+    </div>
+
+    <div class="scale-item">
+      <div class="scale-badge">🔴 无法规模化</div>
+      <div>
+        <div class="scale-title">发件域名预热管理（Outreach Engine）</div>
+        <div class="scale-reason">每个新域名需要 4-8 周预热期，每天限 50-100 封。多客户场景下域名资源是硬上限，无法通过代码解决。<strong>瓶颈：物理上受限于 ESP 反垃圾机制，买更多域名成本线性增长。</strong></div>
+      </div>
+    </div>
+
+    <div class="scale-item">
+      <div class="scale-badge">🔴 无法规模化</div>
+      <div>
+        <div class="scale-title">访客意图阈值配置（Capture Engine）</div>
+        <div class="scale-reason">「高意图」的定义在不同行业/客户之间差异极大，没有通用标准。每个种子客户需要人工校准 1-2 周才能找到有效阈值。<strong>瓶颈：判断逻辑无法泛化，本质是需要人类领域判断。</strong></div>
+      </div>
+    </div>
+
+    <div class="scale-item">
+      <div class="scale-badge medium">🟡 规模化困难</div>
+      <div>
+        <div class="scale-title">SEO 文章内容质量（Content Engine · 律所）</div>
+        <div class="scale-reason">律所内容有专业合规要求，AI 生成内容需人工审核才能发布。规模越大，审核成本越高，无法完全自动化。<strong>瓶颈：专业内容 = 人工不可绕过。</strong></div>
+      </div>
+    </div>
+
+    <div class="scale-item">
+      <div class="scale-badge medium">🟡 规模化困难</div>
+      <div>
+        <div class="scale-title">ICP 自动生成准确率（ICP Engine）</div>
+        <div class="scale-reason">URL 扫描 → 自动提炼 ICP 在长尾行业准确率低（如小众制造业、专业服务）。ICP 跑偏了，下游所有模块数据都失真。<strong>瓶颈：LLM 对小众垂直行业的理解深度不足，泛化能力有限。</strong></div>
+      </div>
+    </div>
+
+    <div class="scale-item">
+      <div class="scale-badge medium">🟡 规模化困难</div>
+      <div>
+        <div class="scale-title">回复率反哺 ICP 修正（Learning Engine）</div>
+        <div class="scale-reason">飞轮逻辑需要足够的样本量（通常 200+ 封邮件）才有统计意义。小客户发件量不足，反馈信号稀疏，模型修正噪声大于信号。<strong>瓶颈：数据驱动优化需要最低数据量门槛，早期客户很难达到。</strong></div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:14px 18px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:10px;font-size:13px;color:#2e7d32;line-height:1.7;">
+      <strong>💡 规模化核心矛盾：</strong>Sitesfy 的价值在于「真实个性化」，但规模化依赖「标准化」。<br>
+      两者天然矛盾——解决路径是<strong>找到哪些判断可以被数据替代（规模化），哪些必须保留人工（护城河）</strong>，而不是试图把所有环节都自动化。
+    </div>
+  </div>
+
     <div class="summary-title">📊 汇总：第一期 vs 延后</div>
 
     <div class="count-row" style="margin-bottom:28px;">
