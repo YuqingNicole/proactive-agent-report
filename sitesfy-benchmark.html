@@ -299,6 +299,59 @@
 
 </div>
 
+
+  <!-- Technical Challenges: Benchmark -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-orange"></div>
+      <div><h2>技术难点</h2><span class="sub">构建 benchmark 系统时真正难的地方</span></div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">⚙️</span>
+      <div class="insight-text">
+        以下难点来自构建这套框架的实际经验，不是理论预测。每一个在工程落地时都踩过坑。
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ef4444;margin-bottom:14px;">
+      <h3>🔴 LLM 审核的不一致性（L3 Auditor）</h3>
+      <p>用 LLM 做 judge 时，同一个输出在不同温度、不同 prompt 顺序下评分可能相差 15-20 分。
+      这使得 benchmark 结果本身变得不可靠——你在测试 agent 质量，还是在测试 judge 的随机性？<br><br>
+      <strong>解决思路：</strong>① 多次评分取中位数 ② judge 用温度=0 ③ 关键维度加 rule-based 校验层（格式检查用规则，质量评估用 LLM）</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ef4444;margin-bottom:14px;">
+      <h3>🔴 上下文泄漏（Context Bleeding）</h3>
+      <p>多步任务中，前序步骤的错误信息、噪声输出会污染后续 agent 的判断。
+      在长依赖链里，T1 的轻微偏差到 T5 可能放大为完全错误的输出——但 L3 的每步 audit 只看当前步骤，无法发现这种累积漂移。<br><br>
+      <strong>解决思路：</strong>为每个子任务严格定义输入 schema，只传必要字段，不传原始历史。必要时在关键节点加「一致性检查」子任务。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 并行任务的状态同步</h3>
+      <p>Fan-out 并行执行时，如何保证多个 agent 不会争抢同一资源（文件写入/API 配额）？
+      以及 merge 步骤如何处理部分成功、部分失败的情况——是等所有子任务，还是超时降级？<br><br>
+      <strong>解决思路：</strong>每个并行子任务写独立临时文件，merge 步骤负责整合。定义明确的「部分结果接受条件」（≥2/3 子任务成功即可继续）。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 Benchmark 自身的测试数据污染</h3>
+      <p>如果 benchmark 的 test cases 被写进训练数据，评分会虚高。
+      对于使用 fine-tuned 模型的场景，很难判断模型是「真的会做」还是「记住了答案」。<br><br>
+      <strong>解决思路：</strong>定期更新 test cases，加入「当前日期相关」的动态题（如「今天的 GitHub trending」），强制要求 real-time 能力。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 超时与成本的权衡</h3>
+      <p>复杂任务的 agent 运行时间可能从 10 秒到 10 分钟不等。
+      timeout 设太短 → 误判失败；设太长 → benchmark 跑一次要几小时，迭代极慢。
+      同时每次 benchmark run 的 token 成本不可忽视（100 个 test cases × 复杂任务 = 数美元/次）。<br><br>
+      <strong>解决思路：</strong>按复杂度分层跑：快速冒烟（simple cases，每次 commit）+ 全量 benchmark（每周一次）。</p>
+    </div>
+
+  </div>
+
 <footer>Agent Benchmark Framework v1.0 · 2026-03-23 · Nicole + Qing</footer>
 </body>
 </html>
