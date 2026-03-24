@@ -436,6 +436,94 @@
   .scale-title { font-weight: 700; color: #333; font-size: 13px; margin-bottom: 4px; }
   .scale-reason { font-size: 12px; color: #666; line-height: 1.6; }
 
+
+  /* ── CEO Vision Section ── */
+  .vision-section {
+    background: linear-gradient(135deg, #f3e5f5, #e8eaf6);
+    border: 2px solid #9c27b0;
+    border-radius: 16px;
+    padding: 32px;
+    margin: 48px 0;
+  }
+  .vision-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #7b1fa2;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .vision-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #1a1d2e;
+    margin-bottom: 6px;
+  }
+  .vision-sub {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ce93d8;
+  }
+  .vision-reframe {
+    background: #fff;
+    border-left: 4px solid #9c27b0;
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+  .vision-reframe .label { font-size: 11px; color: #9c27b0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .vision-reframe .current { color: #999; font-size: 13px; text-decoration: line-through; margin-bottom: 4px; }
+  .vision-reframe .ideal { color: #1a1d2e; font-size: 14px; font-weight: 700; }
+  .vision-layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .vision-layer {
+    background: #fff;
+    border: 1px solid #e1bee7;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vision-layer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .layer-1::before { background: linear-gradient(90deg, #9c27b0, #ce93d8); }
+  .layer-2::before { background: linear-gradient(90deg, #3949ab, #7986cb); }
+  .layer-3::before { background: linear-gradient(90deg, #00897b, #4db6ac); }
+  .layer-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .layer-name { font-size: 14px; font-weight: 700; color: #1a1d2e; margin-bottom: 8px; }
+  .layer-desc { font-size: 12px; color: #666; line-height: 1.65; margin-bottom: 10px; }
+  .layer-output { font-size: 11px; background: #f5f5f5; border-radius: 6px; padding: 8px 10px; color: #444; font-style: italic; }
+  .vision-biz {
+    background: #fff;
+    border: 1px solid #e1bee7;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .vision-biz h4 { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: #1a1d2e; }
+  .biz-row { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 10px; }
+  .biz-label { flex-shrink: 0; font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; width: 60px; padding-top: 2px; }
+  .biz-content { font-size: 13px; color: #444; line-height: 1.6; }
+  .biz-content strong { color: #9c27b0; }
+  .vision-tagline {
+    text-align: center;
+    padding: 20px;
+    background: #7b1fa2;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .vision-tagline span { opacity: 0.75; font-size: 13px; font-weight: 400; display: block; margin-top: 6px; font-family: 'Noto Sans SC', sans-serif; }
+
 </style>
 </head>
 <body>
@@ -969,6 +1057,64 @@
 
   <!-- Summary -->
   <div class="summary">
+
+
+  <!-- CEO Product Vision -->
+  <div class="vision-section">
+    <div class="vision-eyebrow">CEO 视角 · 理想产品形态</div>
+    <div class="vision-title">从「执行自动化」到「判断情报化」</div>
+    <div class="vision-sub">如果重新定义 Sitesfy，核心命题需要一次根本性转变</div>
+
+    <div class="vision-reframe">
+      <div class="label">定位重构</div>
+      <div class="current">当前：「Proactive Agent 帮你跑出海获客」→ 解决执行问题</div>
+      <div class="ideal">理想：「你的第一个出海市场情报官」→ 解决判断问题</div>
+    </div>
+
+    <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:24px;">
+      出海获客失败的根本原因，90% 不是「没人帮你发邮件」，而是：<strong>ICP 选错了、话术不对、时机不对</strong>。
+      执行层的自动化只在判断正确的前提下有价值。判断错误 + 自动化 = <strong>规模化地烧钱</strong>。
+    </p>
+
+    <div class="vision-layers">
+      <div class="vision-layer layer-1">
+        <div class="layer-num">Layer 1</div>
+        <div class="layer-name">Signal Intelligence<br><span style="font-size:12px;color:#888;">信号情报层</span></div>
+        <div class="layer-desc">不是帮你找联系人，是帮你理解市场正在发生什么：谁在找替代方案、竞品哪里出了问题、行业现在的采购信号是什么。</div>
+        <div class="layer-output">输出：判断依据，不是名单</div>
+      </div>
+      <div class="vision-layer layer-2">
+        <div class="layer-num">Layer 2</div>
+        <div class="layer-name">Judgment Engine<br><span style="font-size:12px;color:#888;">判断引擎</span></div>
+        <div class="layer-desc">基于信号，给出可执行的具体决策：「这周德国有3家零售商在问 ESG 认证，这是你的入口」「律所有2家高意图访客在搜 GDPR 罚款案例」。</div>
+        <div class="layer-output">输出：用户的具体行动指令</div>
+      </div>
+      <div class="vision-layer layer-3">
+        <div class="layer-num">Layer 3</div>
+        <div class="layer-name">Execution Autopilot<br><span style="font-size:12px;color:#888;">执行自动驾驶</span></div>
+        <div class="layer-desc">在判断正确的前提下，执行才值得自动化——发邮件、写文章、跟进序列。这一层大量外包给 Instantly / Apollo。</div>
+        <div class="layer-output">Sitesfy 只赚「判断正确」的钱</div>
+      </div>
+    </div>
+
+    <div class="vision-biz">
+      <h4>💡 商业模型转变</h4>
+      <div class="biz-row">
+        <div class="biz-label">现在</div>
+        <div class="biz-content">按功能收费（模块数量）→ 卖工具，客户买的是「能力」</div>
+      </div>
+      <div class="biz-row">
+        <div class="biz-label">理想</div>
+        <div class="biz-content"><strong>按结果收费</strong>：帮你拿到多少条有效回复，每条收费。<br>这个模型倒逼产品必须真正解决判断问题，而不只是执行问题。</div>
+      </div>
+    </div>
+
+    <div class="vision-tagline">
+      不是「AI 帮你做出海」<br>
+      是「出海之前，先让你比竞争对手多看一层市场信号」
+      <span>执行谁都能做，信号差距才是护城河</span>
+    </div>
+  </div>
 
   <!-- Scalability Analysis -->
   <div class="scale-section">
