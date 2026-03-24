@@ -180,6 +180,7 @@
     <div class="toc-grid">
       <a href="#vision">① 产品愿景与定位</a>
       <a href="#users">② 目标用户</a>
+      <a href="#autoresearch">② ᵃ autoresearch 实践路径</a>
       <a href="#architecture">③ 产品架构</a>
       <a href="#modules">④ 核心模块详解</a>
       <a href="#sitemap">⑤ 网站信息架构</a>
@@ -273,6 +274,81 @@
       <strong>行业：</strong>制造业出口、专业服务（法律/财税/咨询）、SaaS 出海<br>
       <strong>决策人：</strong>创始人 / 销售负责人 / 市场负责人<br>
       <strong>共同特征：</strong>已经有产品，卡在「找到对的人并建立联系」这一步</p>
+    </div>
+  </div>
+
+
+  <!-- Autoresearch-inspired Practice Path -->
+  <div class="section" id="autoresearch">
+    <div class="section-header">
+      <div class="stripe s-purple"></div>
+      <div><h2>实践路径参考：autoresearch 模式</h2>
+      <span class="sub">Karpathy 的自主研究范式在 Sitesfy 上的迁移</span></div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">🔬</span>
+      <div class="insight-text">
+        <strong>autoresearch 核心思想（Karpathy, 2026-03）：</strong>
+        给 AI agent 一个真实的优化目标 + 固定实验周期 + 单一可修改文件，让它自主实验、评估、迭代。
+        你睡觉，agent 跑 100 次实验，早上看日志。<br>
+        → <a href="https://github.com/karpathy/autoresearch" target="_blank" style="color:var(--purple);">github.com/karpathy/autoresearch</a> · 52K stars
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>核心设计原则映射</h3>
+      <div class="table-wrap" style="margin:12px 0 0;">
+        <table>
+          <thead><tr><th>autoresearch（LLM 训练）</th><th>Sitesfy 版本（出海获客）</th></tr></thead>
+          <tbody>
+            <tr><td>修改 <code>train.py</code>（模型架构/超参）</td><td>修改开发信话术 / ICP 条件 / 发送时间</td></tr>
+            <tr><td>固定时间预算：5 分钟/次</td><td>固定实验周期：每批 50 封邮件 / 一周</td></tr>
+            <tr><td>单一指标：val_bpb（越低越好）</td><td>单一指标：有效回复率（越高越好）</td></tr>
+            <tr><td>保留 or 丢弃（比上一次好就保留）</td><td>扩量 or 暂停（回复率提升则扩，下降则丢）</td></tr>
+            <tr><td><code>program.md</code>：人类编程 agent 的接口</td><td>Proactive Core 配置：人类定义优化方向</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>具体实践路径：Outbound 自动优化循环</h3>
+      <p style="font-size:13px;color:var(--mid);line-height:1.8;margin-bottom:14px;">
+        Phase 1 可以先实现这个最小闭环，不需要完整的 Learning Engine：
+      </p>
+      <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:2;">
+        <div style="color:#5b21b6;font-weight:700;">Loop（每周一次）:</div>
+        <div style="margin-left:20px;">
+          1. 取上周各话术版本的回复率数据<br>
+          2. <span style="color:#065f46;">if 某版本回复率 > 基准 × 1.2</span> → 扩量，复制该版本到更多目标<br>
+          3. <span style="color:#c62828;">if 某版本回复率 &lt; 基准 × 0.5</span> → 暂停该方向<br>
+          4. <span style="color:#92400e;">if 所有版本都在基准线附近</span> → 触发 Content Engine 生成新变体<br>
+          5. 输出周报：「本周自主行动列表 + 下周实验计划」
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>💡 关键洞察：指标选择决定一切</h3>
+        <p>autoresearch 成功的关键是指标极度清晰（val_bpb）。Sitesfy 的对应指标应该是<strong>「有意义回复数/发送数」</strong>，而不是「打开率」（可以刷）或「点击率」（不等于真实兴趣）。指标模糊，agent 优化方向就会漂移。</p>
+      </div>
+      <div class="card">
+        <h3>⚠️ 风险：优化指标 ≠ 优化目标</h3>
+        <p>autoresearch 可以优化出「在这台 GPU 上 5 分钟内表现最好的模型」，但不保证这个模型泛化能力强。Sitesfy 版本同理：自动优化回复率可能产生「吸引眼球但不转化」的话术。需要在 Learning Engine 里加「回复质量」的二次过滤。</p>
+      </div>
+    </div>
+
+    <div class="insight tip">
+      <span class="insight-icon">🚀</span>
+      <div class="insight-text">
+        <strong>Phase 1 最小实现：</strong>不需要完整的 Proactive Core。只需要：
+        ① Instantly webhook 把回复事件推到 Supabase
+        ② 一个每周 cron job 读取数据、对比版本、生成调整建议
+        ③ 用户确认后执行调整
+        <br>总工程量：约 2-3 天。这是验证「引擎能自运转」最快的路径。
+      </div>
     </div>
   </div>
 
