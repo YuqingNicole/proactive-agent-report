@@ -131,6 +131,23 @@
   .tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:8px; background:var(--bg); color:var(--dim); border:1px solid var(--border); }
 
   footer { text-align:center; padding:32px; color:var(--light); font-size:12px; border-top:1px solid var(--border); margin-top:60px; background:#f1f3f8; }
+
+  /* Difficulty badges */
+  .diff { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; margin-left:8px; vertical-align:middle; white-space:nowrap; }
+  .diff-hard { background:#fce4ec; color:#c62828; border:1px solid #ef9a9a; }
+  .diff-medium { background:#fff3e0; color:#e65100; border:1px solid #ffcc80; }
+  .diff-note { font-size:11px; color:#888; font-style:italic; margin-left:4px; }
+  .impl-section { background:#fff8e1; border:2px solid #ffd54f; border-radius:16px; padding:28px 32px; margin:40px 0; }
+  .impl-section h3 { font-family:'Noto Serif SC',serif; font-size:18px; font-weight:700; color:#e65100; margin-bottom:20px; }
+  .impl-item { display:flex; gap:14px; padding:16px 0; border-bottom:1px solid #ffe082; }
+  .impl-item:last-child { border-bottom:none; }
+  .impl-badge { flex-shrink:0; padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700; white-space:nowrap; height:fit-content; margin-top:2px; }
+  .impl-hard { background:#fce4ec; color:#c62828; border:1px solid #f48fb1; }
+  .impl-medium { background:#fff3e0; color:#e65100; border:1px solid #ffcc80; }
+  .impl-title { font-weight:700; font-size:13px; color:#1a1d2e; margin-bottom:5px; }
+  .impl-why { font-size:12px; color:#666; line-height:1.7; }
+  .impl-workaround { margin-top:6px; font-size:12px; color:#2e7d32; background:#e8f5e9; border-radius:6px; padding:5px 10px; }
+
 </style>
 </head>
 <body>
@@ -168,6 +185,7 @@
       <a href="#userflow">⑥ 关键用户路径</a>
       <a href="#tech">⑦ 技术栈</a>
       <a href="#metrics">⑧ 成功指标</a>
+      <a href="#difficulty">⑧ᵃ 实现难度标注</a>
       <a href="#roadmap">⑨ 发布路线图</a>
       <a href="#risks">⑩ 风险与护城河</a>
     </div>
@@ -552,6 +570,103 @@
         </tbody>
       </table>
     </div>
+  </div>
+
+
+  <!-- Implementation Difficulty Analysis -->
+  <div class="impl-section" id="difficulty">
+    <h3>⚙️ 实现难度标注：哪些地方最难做？</h3>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-hard">🔴 高难</div>
+      <div>
+        <div class="impl-title">Proactive Core 的决策逻辑 · 模块 00</div>
+        <div class="impl-why">
+          核心难点不是技术，是<strong>「什么时候该自动执行，什么时候该让人判断」</strong>这个边界极难定义。
+          阈值设太高 → 引擎不动，用户感受不到价值；设太低 → 乱发邮件，砸域名声誉。
+          需要在真实用户数据中反复标定，MVP 阶段很容易出错。
+        </div>
+        <div class="impl-workaround">💡 建议：Phase 1 先硬编码简单规则（回复率＜2% 暂停，＞8% 扩量），不要过早做通用决策引擎</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-hard">🔴 高难</div>
+      <div>
+        <div class="impl-title">邮件个性化质量 vs 规模 · Content Engine</div>
+        <div class="impl-why">
+          LLM 生成的开发信越来越容易被 AI 检测工具识别（ESP 已开始过滤）。
+          真正有效的个性化需要公司级别的上下文（融资信息、近期动态、职位变动），
+          而这些数据获取成本高、时效性强、很难自动化到足够质量。
+        </div>
+        <div class="impl-workaround">💡 建议：用「模板+变量」结构而非完全 LLM 生成，关键个性化字段（最近一篇博文/近期招聘信号）由 scraper 实时抓取</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-hard">🔴 高难</div>
+      <div>
+        <div class="impl-title">访客意图评分标定 · Capture Engine</div>
+        <div class="impl-why">
+          每个行业、每个产品的「高意图行为」定义完全不同。
+          律所访客看「GDPR 罚款案例」页面和看「关于我们」页面的意图差异，
+          需要人工标注样本才能训练出有意义的模型——而早期根本没有样本数据。
+        </div>
+        <div class="impl-workaround">💡 建议：Phase 1 用硬规则替代模型（停留＞3分钟 + 访问定价页 = 高意图），积累 200+ 样本后再引入评分模型</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-medium">🟡 中难</div>
+      <div>
+        <div class="impl-title">域名预热自动化管理 · Outreach Engine</div>
+        <div class="impl-why">
+          预热是机械性工作（每天发 X 封，发件人要变化，内容要真实），
+          但跨多个客户域名的并行管理、预热进度追踪、声誉监控，工程量不小。
+          Instantly 提供了预热功能，但 API 层的精细控制有限。
+        </div>
+        <div class="impl-workaround">💡 建议：直接用 Instantly 的内置预热功能，不要自建。Sitesfy 层只做状态监控，不碰预热逻辑</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-medium">🟡 中难</div>
+      <div>
+        <div class="impl-title">SEO 文章自动发布到客户网站 · Content Engine</div>
+        <div class="impl-why">
+          WordPress API 存在版本差异大、认证方式不统一（REST API / XML-RPC / 插件认证）的问题。
+          Headless CMS 客户更复杂，需要单独适配 Contentful / Sanity / Ghost。
+          图片处理、分类/标签自动匹配、SEO 插件字段（Yoast/RankMath）填写都是细节陷阱。
+        </div>
+        <div class="impl-workaround">💡 建议：Phase 1 只支持 WordPress + Application Password 认证，其他 CMS 全部延后</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-medium">🟡 中难</div>
+      <div>
+        <div class="impl-title">Learning Engine 的飞轮打通 · 模块 05</div>
+        <div class="impl-why">
+          数据反哺 ICP 修正听起来简单，但实际上需要：足够的样本量（＞200 封回复）、
+          因果判断（是 ICP 的问题还是话术问题？）、防止过拟合（不能因为一个方向回复率高就全押）。
+          这是一个需要持续迭代的数据工程问题，不是写一次就好的功能。
+        </div>
+        <div class="impl-workaround">💡 建议：Phase 1 只做数据采集，不做自动修正。Phase 2 再引入建议层（「建议扩大德国市场比例」），用户确认后才执行</div>
+      </div>
+    </div>
+
+    <div class="impl-item">
+      <div class="impl-badge impl-medium">🟡 中难</div>
+      <div>
+        <div class="impl-title">德语/多语言开发信质量 · Content Engine</div>
+        <div class="impl-why">
+          LLM 在德语商务邮件上的质量明显低于英语，尤其是德国商业文化中对正式程度的把握（Sie vs du）、
+          行业术语、以及「不像机器翻译」这个关键要求，很难通过 prompt 完全解决。
+        </div>
+        <div class="impl-workaround">💡 建议：用 Claude Opus 4.5 生成，加入德语 native speaker 写的 few-shot 示例，邮件发出前增加「语言质量」自动评分层</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- 9. 路线图 -->
