@@ -186,6 +186,7 @@
       <a href="#tech">⑦ 技术栈</a>
       <a href="#metrics">⑧ 成功指标</a>
       <a href="#difficulty">⑧ᵃ 实现难度标注</a>
+      <a href="#tech-challenges">⑧ᵇ 技术底层难点</a>
       <a href="#roadmap">⑨ 发布路线图</a>
       <a href="#risks">⑩ 风险与护城河</a>
     </div>
@@ -665,6 +666,63 @@
         </div>
         <div class="impl-workaround">💡 建议：用 Claude Opus 4.5 生成，加入德语 native speaker 写的 few-shot 示例，邮件发出前增加「语言质量」自动评分层</div>
       </div>
+    </div>
+
+  </div>
+
+
+  <!-- Technical Challenges: PRD -->
+  <div class="section" id="tech-challenges">
+    <div class="section-header">
+      <div class="stripe s-red"></div>
+      <div><h2>技术底层难点</h2><span class="sub">不在功能列表里但决定成败的工程挑战</span></div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ef4444;margin-bottom:14px;">
+      <h3>🔴 实时信号的时效性 vs 处理成本</h3>
+      <p>Proactive Core 需要「实时」感知信号，但真正的实时处理（毫秒级）成本极高。
+      邮件回复率每 5 分钟轮询一次已经够快，但访客意图识别需要接近实时（用户还在页面上时触达才有意义）。
+      两种截然不同的延迟需求，共享同一套架构，会产生资源分配和优先级冲突。<br><br>
+      <strong>解决思路：</strong>双轨架构——高频信号（访客）走 Supabase Realtime WebSocket，低频信号（邮件回复）走 cron 轮询。Proactive Core 订阅两个队列。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ef4444;margin-bottom:14px;">
+      <h3>🔴 多客户隔离 + 数据安全</h3>
+      <p>桌游公司和律所的数据必须严格隔离。LLM 调用时如果不小心把 A 公司的 ICP 数据混入 B 公司的 prompt，
+      轻则输出错误，重则泄漏商业机密。Supabase 的 Row Level Security 在单表层面好控制，
+      但跨表 join + LLM context 组装时的隔离非常容易出错。<br><br>
+      <strong>解决思路：</strong>每次 LLM 调用前，在 middleware 层强制注入 tenant_id 过滤，所有数据查询必须带 tenant 上下文。定期审计 LLM prompt 里的数据来源。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ef4444;margin-bottom:14px;">
+      <h3>🔴 邮件送达率的不可观测性</h3>
+      <p>Instantly 能给你打开率和回复率，但无法告诉你有多少邮件静默进了垃圾桶（既没退信也没显示未送达）。
+      这意味着 Proactive Core 基于「低回复率」做的判断，可能是数据失真——不是 ICP 错了，是邮件根本没被看到。
+      两种情况需要截然不同的应对策略，却呈现同样的外部表现。<br><br>
+      <strong>解决思路：</strong>在 Learning Engine 加「送达质量评分」层——监控退信率、DMARC 报告、Spam complaint rate，作为回复率数据的可信度权重。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 LLM 输出的幂等性</h3>
+      <p>同一个用户 URL 和 ICP 条件，两次调用 LLM 可能生成完全不同的开发信内容和关键词列表。
+      这对「A/B 测试主题行」有价值，但对「修改后重新生成」是灾难——用户无法判断是他的改动生效了，
+      还是 LLM 随机产生了变化。<br><br>
+      <strong>解决思路：</strong>固定 seed（对支持的模型）+ 版本化存储所有生成结果，修改走 diff 展示，不是整体重新生成。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 Apollo 数据质量参差不齐</h3>
+      <p>Apollo 的联系人数据准确率在不同行业差异很大。欧洲小型桌游零售商的决策人邮箱，
+      Apollo 经常是空的或过期的（人员流动、公司规模小）。
+      发到错误邮箱不只是浪费，还会拉低域名声誉。<br><br>
+      <strong>解决思路：</strong>接入 Hunter.io 或 Proxycurl 做邮箱验证层，发送前必须通过 MX 记录验证。对验证失败的联系人标记，不纳入发送队列。</p>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f59e0b;margin-bottom:14px;">
+      <h3>🟡 WordPress API 版本碎片化</h3>
+      <p>WordPress 5.x 和 6.x 的 REST API 行为有差异，加上 WooCommerce / Elementor 等插件可能修改默认路由，
+      导致「自动发布文章」在不同客户网站上行为不一致。Application Password 认证在部分安全插件下会被拦截。<br><br>
+      <strong>解决思路：</strong>发布前先调 <code>/wp/v2/posts?status=draft</code> 做连通性测试，记录每个客户的 WordPress 环境指纹，异常时降级为「生成草稿 + 邮件通知人工发布」。</p>
     </div>
 
   </div>
