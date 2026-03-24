@@ -186,6 +186,7 @@
       <a href="#modules">④ 核心模块详解</a>
       <a href="#sitemap">⑤ 网站信息架构</a>
       <a href="#userflow">⑥ 关键用户路径</a>
+      <a href="#apollo-billing">⑥ ᵃ Apollo 计费逻辑</a>
       <a href="#tech">⑦ 技术栈</a>
       <a href="#metrics">⑧ 成功指标</a>
       <a href="#difficulty">⑧ᵃ 实现难度标注</a>
@@ -595,6 +596,90 @@
         <div class="flow-step">下周周报</div>
       </div>
       <p style="font-size:12px;color:var(--dim);margin-top:12px;">目标：用户每周投入 ＜30 分钟，引擎自主运转其余时间</p>
+    </div>
+  </div>
+
+
+  <!-- Apollo API Billing -->
+  <div class="section" id="apollo-billing">
+    <div class="section-header">
+      <div class="stripe s-blue"></div>
+      <div><h2>Apollo.io API 计费逻辑</h2>
+      <span class="sub">Sitesfy ICP Engine 的核心数据成本</span></div>
+    </div>
+
+    <div class="insight warn">
+      <span class="insight-icon">💰</span>
+      <div class="insight-text">
+        <strong>Apollo 的「credits」≠ 货币单位，是数据访问单位。</strong>不同操作消耗不同 credits 数量。核心成本在于「获取联系人邮箱」这个动作，而不是搜索本身。
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>套餐</th><th>月费</th><th>邮箱 credits/月</th><th>手机号 credits/月</th><th>API 访问</th><th>适合场景</th></tr></thead>
+        <tbody>
+          <tr><td>Free（永久）</td><td>$0</td><td>50</td><td>0</td><td>❌</td><td>手动测试，不可用于产品</td></tr>
+          <tr><td>Basic</td><td>$59/用户</td><td>1,000</td><td>50</td><td>✅ 有限制</td><td>单个种子客户 MVP 验证</td></tr>
+          <tr><td>Professional</td><td>$99/用户</td><td>2,000</td><td>100</td><td>✅</td><td>多客户并行，推荐起步</td></tr>
+          <tr><td>Organization</td><td>$149/用户</td><td>4,000</td><td>200</td><td>✅ 更高限额</td><td>规模化后</td></tr>
+          <tr><td>Enterprise</td><td>定制</td><td>定制</td><td>定制</td><td>✅ 无限制</td><td>大规模商业部署</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3>Credits 消耗规则</h3>
+      <div class="table-wrap" style="margin:10px 0 0;">
+        <table>
+          <thead><tr><th>操作</th><th>消耗</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td>搜索联系人（查看基础信息）</td><td>0 credits</td><td>免费浏览搜索结果</td></tr>
+            <tr><td>导出联系人邮箱</td><td>1 credit/人</td><td>核心成本所在</td></tr>
+            <tr><td>获取手机号</td><td>1 mobile credit/人</td><td>单独计费池</td></tr>
+            <tr><td>公司信息查询</td><td>0 credits</td><td>公司级数据免费</td></tr>
+            <tr><td>API 批量导出</td><td>同上，按联系人数计</td><td>API 与界面同价</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h3>Sitesfy 的成本估算</h3>
+      <p style="font-size:13px;color:var(--mid);line-height:1.8;">
+        <strong>单个种子客户场景（桌游公司）：</strong><br>
+        目标：每月触达 300 家欧洲零售商，每家 1 个决策人邮箱 = <strong>300 credits/月</strong><br>
+        Basic 套餐（1,000 credits）可覆盖 3 个这样的客户，月成本 $59/用户<br><br>
+        <strong>规模化场景（10 个客户，各 500 封/月）：</strong><br>
+        5,000 credits/月 → Organization 套餐（4,000）+ add-on，或直接 Enterprise 谈量<br><br>
+        <strong>关键洞察：</strong>Apollo 的 credit 不滚存（月底清零），需要根据实际发送节奏来选套餐，<strong>不要按最大容量买</strong>。
+      </p>
+    </div>
+
+    <div class="insight danger">
+      <span class="insight-icon">⚠️</span>
+      <div class="insight-text">
+        <strong>API Rate Limits（重要）：</strong>
+        Apollo API 有请求频率限制，超出会返回 429。建议 Sitesfy 在 ICP Engine 层做：
+        ① 请求队列 + 指数退避重试
+        ② 每次 batch 导出而非逐条请求（一次拉 100 个比 100 次各拉 1 个省 99% API 调用）
+        ③ 结果本地缓存，相同 ICP 条件 24 小时内不重复调用
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>替代方案对比（当 Apollo 不够用时）</h3>
+      <div class="table-wrap" style="margin:10px 0 0;">
+        <table>
+          <thead><tr><th>方案</th><th>成本</th><th>数据质量</th><th>适用场景</th></tr></thead>
+          <tbody>
+            <tr><td>Apollo（主力）</td><td>$59-149/月</td><td>⭐⭐⭐⭐</td><td>通用 B2B 联系人</td></tr>
+            <tr><td>Proxycurl</td><td>$0.01-0.05/请求</td><td>⭐⭐⭐⭐⭐</td><td>补充决策人 LinkedIn 信息</td></tr>
+            <tr><td>Hunter.io</td><td>$34/月起</td><td>⭐⭐⭐</td><td>邮箱验证 + 域名级查找</td></tr>
+            <tr><td>SPIEL 展商名单</td><td>免费（年度公开）</td><td>⭐⭐⭐⭐⭐</td><td>德国桌游市场专项</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
