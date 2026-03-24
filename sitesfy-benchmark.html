@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitesfy · Agent Benchmark 框架</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --purple:#7B52D3; --blue:#2BAEE8; --green:#10b981;
+    --orange:#f59e0b; --red:#ef4444; --pink:#E8559A;
+    --ink:#111118; --mid:#333344; --dim:#666677; --light:#999aaa;
+    --bg:#F8F8FC; --white:#FFFFFF; --border:#E2E2EE;
+  }
+  body { background:var(--bg); color:var(--ink); font-family:'Noto Sans SC','PingFang SC',sans-serif; font-size:14px; line-height:1.7; }
+  nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:12px 24px; display:flex; gap:8px; align-items:center; font-size:13px; flex-wrap:wrap; }
+  nav .brand { color:#6355e8; font-weight:700; margin-right:8px; }
+  nav a { color:#6b7280; text-decoration:none; padding:5px 12px; border-radius:6px; }
+  nav a.active { background:rgba(99,85,232,0.08); color:#6355e8; font-weight:600; }
+  .page { max-width:960px; margin:0 auto; padding:60px 48px 100px; }
+  .doc-eyebrow { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--purple); font-weight:600; margin-bottom:14px; }
+  .doc-title { font-family:'Noto Serif SC',serif; font-size:34px; font-weight:900; line-height:1.2; letter-spacing:-1px; margin-bottom:10px; }
+  .doc-title .grad { background:linear-gradient(90deg,var(--purple),var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .doc-sub { font-size:15px; color:var(--dim); margin-bottom:28px; }
+  .doc-meta { display:flex; gap:28px; font-size:12px; color:var(--light); padding-bottom:32px; border-bottom:1px solid var(--border); margin-bottom:40px; flex-wrap:wrap; }
+  .doc-meta span strong { color:var(--mid); font-weight:500; }
+  .section { margin-bottom:48px; }
+  .section-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+  .stripe { width:4px; height:22px; border-radius:2px; flex-shrink:0; }
+  .s-purple { background:linear-gradient(180deg,var(--purple),#a78bfa); }
+  .s-blue { background:var(--blue); }
+  .s-green { background:var(--green); }
+  .s-orange { background:var(--orange); }
+  .section-header h2 { font-family:'Noto Serif SC',serif; font-size:19px; font-weight:700; }
+  .section-header .sub { font-size:12px; color:var(--dim); font-weight:400; }
+  .card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:16px; }
+  .card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .card p { font-size:13px; color:var(--mid); line-height:1.7; }
+  .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:16px; }
+  .insight { border-radius:12px; padding:16px 20px; margin-bottom:16px; display:flex; gap:12px; }
+  .insight.key { background:#f0eeff; border:1px solid #c4b5fd; }
+  .insight.tip { background:#ecfdf5; border:1px solid #a7f3d0; }
+  .insight-icon { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+  .insight-text { font-size:13px; color:var(--mid); line-height:1.7; }
+  .insight-text strong { color:var(--ink); }
+  .arch { background:#f8fafc; border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:16px; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .arch-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .arch-box { padding:6px 14px; border-radius:8px; border:1px solid; font-weight:600; white-space:nowrap; }
+  .ab-p { background:rgba(123,82,211,0.1); border-color:rgba(123,82,211,0.35); color:#5b21b6; }
+  .ab-b { background:rgba(43,174,232,0.1); border-color:rgba(43,174,232,0.35); color:#0369a1; }
+  .ab-g { background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.35); color:#065f46; }
+  .ab-o { background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.35); color:#92400e; }
+  .ab-gray { background:#f1f3f8; border-color:var(--border); color:var(--dim); }
+  .arch-arrow { color:var(--light); }
+  .arch-label { font-family:'Noto Sans SC',sans-serif; font-size:11px; color:var(--dim); }
+  .table-wrap { overflow-x:auto; border-radius:14px; border:1px solid var(--border); margin:16px 0; }
+  table { width:100%; border-collapse:collapse; background:var(--white); }
+  th { background:#f1f3f8; color:var(--mid); font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:12px 16px; text-align:left; font-weight:700; }
+  td { padding:12px 16px; border-top:1px solid var(--border); font-size:13px; color:var(--mid); vertical-align:top; line-height:1.6; }
+  tr:hover td { background:#f8f6ff; }
+  td:first-child { font-weight:600; color:var(--ink); }
+  pre { background:#1e1e2e; color:#cdd6f4; border-radius:10px; padding:20px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.6; margin:12px 0; }
+  code { background:rgba(123,82,211,0.1); border:1px solid rgba(123,82,211,0.2); border-radius:4px; padding:1px 6px; font-size:0.85em; font-family:'JetBrains Mono',monospace; color:#5b21b6; }
+  .badge { display:inline-flex; align-items:center; font-size:11px; font-weight:700; padding:3px 9px; border-radius:10px; margin-right:4px; }
+  .b-green { background:#edf9f0; color:#059669; border:1px solid #a7f3d0; }
+  .b-orange { background:#fff8e0; color:#b45309; border:1px solid #fcd34d; }
+  .b-red { background:#fce4ec; color:#c62828; border:1px solid #f48fb1; }
+  .gh-link { display:inline-flex; align-items:center; gap:6px; background:var(--ink); color:#fff; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; margin-bottom:24px; }
+  footer { text-align:center; padding:32px; color:var(--light); font-size:12px; border-top:1px solid var(--border); margin-top:60px; background:#f1f3f8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">🗂 Nicole Research</span>
+  <a href="/index.html">Proactive Agent</a>
+  <a href="/openclaw-memory-guide.html">OpenClaw Memory</a>
+  <a href="/sitesfy-mvp.html">Sitesfy MVP</a>
+  <a href="/sitesfy-prd.html">完整 PRD</a>
+  <a href="/sitesfy-benchmark.html" class="active">Agent Benchmark ✦</a>
+</nav>
+
+<div class="page">
+
+  <div class="doc-eyebrow">Sitesfy · 技术文档</div>
+  <h1 class="doc-title">Agent <span class="grad">Benchmark 框架</span></h1>
+  <p class="doc-sub">多 Agent 工作流质量评估体系：任务拆分 → 执行 → 审核</p>
+  <div class="doc-meta">
+    <span><strong>版本</strong> v1.0</span>
+    <span><strong>日期</strong> 2026-03-23</span>
+    <span><strong>仓库</strong> botearn/agent-benchmark</span>
+  </div>
+
+  <a href="https://github.com/botearn/agent-benchmark" target="_blank" class="gh-link">
+    ↗ GitHub: botearn/agent-benchmark
+  </a>
+
+  <!-- 概述 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-purple"></div>
+      <div><h2>系统概述</h2><span class="sub">为什么需要 benchmark</span></div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">💡</span>
+      <div class="insight-text">
+        <strong>三个核心设计原则：</strong><br>
+        ① <strong>可验证的拆分</strong> — 每个子任务有且仅有一句话接受标准<br>
+        ② <strong>失败优先的执行</strong> — 每个任务默认会失败，设计的是失败后如何恢复<br>
+        ③ <strong>嵌入式审核</strong> — 每步完成后立刻 audit，不让错误向下传播
+      </div>
+    </div>
+
+    <div class="arch">
+      <div style="font-family:'Noto Sans SC',sans-serif;font-size:12px;color:var(--dim);margin-bottom:14px;">三层工作流</div>
+      <div class="arch-row">
+        <div class="arch-box ab-p">输入任务</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box ab-p">L1 Decomposer</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">拆分成可执行原子单元（每个有接受标准）</div>
+      </div>
+      <div style="margin-left:16px;color:var(--border);font-size:1.1rem;margin-bottom:6px;">↓</div>
+      <div class="arch-row">
+        <div class="arch-box ab-b">L2 Executor</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">按依赖顺序执行，失败分类处理（重试/降级/人工）</div>
+      </div>
+      <div style="margin-left:16px;color:var(--border);font-size:1.1rem;margin-bottom:6px;">↓</div>
+      <div class="arch-row">
+        <div class="arch-box ab-g">L3 Auditor</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">6维度评分，PASS / SOFT_FAIL / HARD_FAIL / BLOCK</div>
+      </div>
+      <div style="margin-left:16px;color:var(--border);font-size:1.1rem;margin-bottom:6px;">↓</div>
+      <div class="arch-row">
+        <div class="arch-box ab-gray">输出 + Benchmark 报告</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- L1 拆分 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-purple"></div>
+      <div><h2>L1 任务拆分（Decomposer）</h2><span class="sub">好的拆分 = 可验证性</span></div>
+    </div>
+
+    <div class="card">
+      <h3>拆分判断标准：一个问题</h3>
+      <p>「你能不能用一句话描述它完成了算什么？」<br>
+      不能 → 继续拆。能 → 停止。<br>
+      这解决了过拆（20个步骤做2步的事）和欠拆（一个任务有3个目标）两个方向的问题。</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Sequential Chain</h3>
+        <p>输出 N 是输入 N+1 的前提。适合：Research → Draft → Edit</p>
+        <pre style="font-size:11px;padding:12px;">T → [T1 → T2 → T3]</pre>
+      </div>
+      <div class="card">
+        <h3>Parallel Fan-out</h3>
+        <p>子任务互相独立，并发执行。适合：同时分析3个竞品</p>
+        <pre style="font-size:11px;padding:12px;">T → [T1, T2, T3] → Merge</pre>
+      </div>
+      <div class="card">
+        <h3>Difficulty-Adaptive</h3>
+        <p>先估算复杂度，再路由到简单/复杂流水线</p>
+        <pre style="font-size:11px;padding:12px;">T → [难度评估] → Simple / Complex</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Subtask Schema（每个子任务必须声明的字段）</h3>
+      <pre>{
+  "id": "T1",
+  "title": "...",
+  "description": "...",
+  "acceptance_criteria": "如何验证完成",  // 最重要
+  "agent_role": "researcher|writer|coder|analyst|reviewer",
+  "depends_on": [],          // 依赖关系
+  "can_parallelize": false,  // 是否可并行
+  "timeout_s": 60,
+  "retry_limit": 2
+}</pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>常见拆分失败</th><th>症状</th><th>修复</th></tr></thead>
+        <tbody>
+          <tr><td>过度拆分</td><td>20个步骤做2步的事</td><td>合并总是同时出现的原子单元</td></tr>
+          <tr><td>欠拆分</td><td>一个子任务有3个不同目标</td><td>按接受标准拆，不能一句话描述就继续拆</td></tr>
+          <tr><td>缺依赖声明</td><td>步骤2在步骤1完成前就开始</td><td>显式声明 depends_on 字段</td></tr>
+          <tr><td>上下文污染</td><td>Agent 携带不相关的前序上下文</td><td>严格限定每个子任务的输入范围</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- L2 执行 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-blue"></div>
+      <div><h2>L2 执行（Executor）</h2><span class="sub">失败优先设计</span></div>
+    </div>
+
+    <div class="insight tip">
+      <span class="insight-icon">🔧</span>
+      <div class="insight-text">
+        <strong>失败分类（不同失败类型对应不同恢复策略）：</strong>
+        Tool failure（重试）/ LLM failure（换模型）/ Context failure（补充输入）/ Logic failure（人工介入）/ Audit rejection（带 feedback 重试）
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Agent Role</th><th>职责</th><th>典型工具</th></tr></thead>
+        <tbody>
+          <tr><td>researcher</td><td>信息采集</td><td>web_search, read_url</td></tr>
+          <tr><td>writer</td><td>结构化文本生成</td><td>LLM generation</td></tr>
+          <tr><td>coder</td><td>代码编写/运行</td><td>code_exec, file_write</td></tr>
+          <tr><td>analyst</td><td>数据处理与综合</td><td>data_tools, LLM</td></tr>
+          <tr><td>reviewer</td><td>质量检查</td><td>LLM judge</td></tr>
+          <tr><td>orchestrator</td><td>任务分解和路由</td><td>decomposition logic</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- L3 审核 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-green"></div>
+      <div><h2>L3 质量审核（Auditor）</h2><span class="sub">6维度评分 + 决策树</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>维度</th><th>权重</th><th>衡量内容</th></tr></thead>
+        <tbody>
+          <tr><td>Task Completion</td><td>30%</td><td>是否实现了目标？</td></tr>
+          <tr><td>Accuracy</td><td>25%</td><td>内容是否真实，无幻觉？</td></tr>
+          <tr><td>Format Adherence</td><td>15%</td><td>输出格式是否符合声明？</td></tr>
+          <tr><td>Conciseness</td><td>10%</td><td>无多余填充内容？</td></tr>
+          <tr><td>Tool Use</td><td>10%</td><td>工具选择和参数是否正确？</td></tr>
+          <tr><td>Safety</td><td>10%</td><td>无违规内容？</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>审核决策树</h3>
+      <p>
+        <span class="badge b-green">PASS</span> score ≥ 70 且 safety ≥ 7 → 接受，进入下一步<br>
+        <span class="badge b-orange">SOFT_FAIL</span> score 50-69 → 带 feedback 重试同一 agent<br>
+        <span class="badge b-red">HARD_FAIL</span> score &lt; 50 → 升级到人工 或 换 agent<br>
+        <span class="badge b-red">BLOCK</span> safety &lt; 5 → 立即停止，告警人工
+      </p>
+    </div>
+  </div>
+
+  <!-- Benchmark 指标 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="stripe s-orange"></div>
+      <div><h2>Benchmark 评分指标</h2><span class="sub">系统级健康度追踪</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>指标</th><th>计算方式</th><th>目标值</th></tr></thead>
+        <tbody>
+          <tr><td>Task Success Rate</td><td>通过任务 / 总任务</td><td>&gt; 80%</td></tr>
+          <tr><td>Subtask Pass Rate</td><td>通过子任务 / 总子任务</td><td>&gt; 85%</td></tr>
+          <tr><td>First-attempt Pass Rate</td><td>不重试就通过 / 总子任务</td><td>&gt; 70%</td></tr>
+          <tr><td>Retry Effectiveness</td><td>重试后通过 / 总重试次数</td><td>&gt; 60%</td></tr>
+          <tr><td>Human Escalation Rate</td><td>升级人工 / 总任务</td><td>&lt; 5%</td></tr>
+          <tr><td>Avg Latency (simple)</td><td>简单任务平均耗时</td><td>&lt; 10s</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Test Case 覆盖类型</h3>
+      <p>
+        ⭐ <code>simple_linear</code> — 3步顺序任务<br>
+        ⭐⭐ <code>parallel_merge</code> — 3条并行任务+合并<br>
+        ⭐⭐ <code>dependency_chain</code> — 5步依赖链<br>
+        ⭐⭐⭐ <code>failure_recovery</code> — 强制工具失败，测试恢复能力<br>
+        ⭐⭐⭐ <code>long_horizon</code> — 10步+分支任务<br>
+        ⭐⭐⭐⭐ <code>adversarial</code> — 模糊输入+冲突需求
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<footer>Agent Benchmark Framework v1.0 · 2026-03-23 · botearn/agent-benchmark</footer>
+</body>
+</html>
