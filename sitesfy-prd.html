@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitesfy · 完整 PRD</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --purple: #7B52D3; --blue: #2BAEE8; --green: #10b981;
+    --orange: #f59e0b; --red: #ef4444; --pink: #E8559A;
+    --ink: #111118; --mid: #333344; --dim: #666677; --light: #999aaa;
+    --bg: #F8F8FC; --white: #FFFFFF; --border: #E2E2EE;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans SC','PingFang SC',sans-serif; font-size: 14px; line-height: 1.7; }
+
+  /* Nav */
+  nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.97); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); padding:12px 24px; display:flex; gap:8px; align-items:center; font-size:13px; flex-wrap:wrap; }
+  nav .brand { color:#6355e8; font-weight:700; margin-right:8px; }
+  nav a { color:#6b7280; text-decoration:none; padding:5px 12px; border-radius:6px; }
+  nav a:hover { background:rgba(99,85,232,0.08); color:#111; }
+
+  .page { max-width: 1000px; margin: 0 auto; padding: 60px 48px 100px; }
+
+  /* Header */
+  .doc-eyebrow { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--purple); font-weight:600; margin-bottom:14px; }
+  .doc-title { font-family:'Noto Serif SC',serif; font-size:36px; font-weight:900; line-height:1.2; letter-spacing:-1px; margin-bottom:10px; }
+  .doc-title .grad { background:linear-gradient(90deg,var(--purple),var(--blue),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .doc-sub { font-size:15px; color:var(--dim); margin-bottom:28px; }
+  .doc-meta { display:flex; gap:28px; font-size:12px; color:var(--light); padding-bottom:32px; border-bottom:1px solid var(--border); margin-bottom:40px; flex-wrap:wrap; }
+  .doc-meta span strong { color:var(--mid); font-weight:500; }
+
+  /* TOC */
+  .toc { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:24px 28px; margin-bottom:48px; }
+  .toc-title { font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); font-weight:700; margin-bottom:14px; }
+  .toc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:6px; }
+  .toc a { font-size:13px; color:var(--purple); text-decoration:none; padding:4px 0; display:flex; align-items:center; gap:6px; }
+  .toc a:hover { color:var(--ink); }
+
+  /* Sections */
+  .section { margin-bottom:56px; }
+  .section-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+  .stripe { width:4px; height:22px; border-radius:2px; flex-shrink:0; }
+  .s-purple { background:linear-gradient(180deg,var(--purple),#a78bfa); }
+  .s-blue { background:var(--blue); }
+  .s-green { background:var(--green); }
+  .s-orange { background:var(--orange); }
+  .s-red { background:var(--red); }
+  .s-pink { background:var(--pink); }
+  .section-header h2 { font-family:'Noto Serif SC',serif; font-size:20px; font-weight:700; }
+  .section-header .sub { font-size:12px; color:var(--dim); font-weight:400; }
+
+  /* Cards */
+  .card { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:22px 24px; margin-bottom:16px; }
+  .card h3 { font-size:15px; font-weight:700; margin-bottom:8px; }
+  .card p { font-size:13px; color:var(--mid); line-height:1.7; }
+  .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:16px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:16px; }
+
+  /* Insight */
+  .insight { border-radius:12px; padding:16px 20px; margin-bottom:16px; display:flex; gap:12px; }
+  .insight.key { background:#f0eeff; border:1px solid #c4b5fd; }
+  .insight.warn { background:#fff8e0; border:1px solid #fcd34d; }
+  .insight.tip { background:#ecfdf5; border:1px solid #a7f3d0; }
+  .insight.danger { background:#fce4ec; border:1px solid #f48fb1; }
+  .insight-icon { font-size:1.1rem; flex-shrink:0; margin-top:2px; }
+  .insight-text { font-size:13px; color:var(--mid); line-height:1.7; }
+  .insight-text strong { color:var(--ink); }
+
+  /* Vision layers */
+  .layer-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-bottom:20px; }
+  .layer-card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px; position:relative; overflow:hidden; }
+  .layer-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+  .l1::before { background:linear-gradient(90deg,var(--purple),#a78bfa); }
+  .l2::before { background:linear-gradient(90deg,#3949ab,#7986cb); }
+  .l3::before { background:linear-gradient(90deg,var(--green),#4db6ac); }
+  .layer-num { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--light); margin-bottom:5px; }
+  .layer-name { font-size:14px; font-weight:700; margin-bottom:8px; }
+  .layer-desc { font-size:12px; color:var(--dim); line-height:1.65; margin-bottom:10px; }
+  .layer-out { font-size:11px; background:#f5f5f5; border-radius:6px; padding:6px 10px; color:#555; font-style:italic; }
+
+  /* Architecture diagram */
+  .arch { background:#f8fafc; border:1px solid var(--border); border-radius:14px; padding:28px; margin-bottom:20px; font-family:'JetBrains Mono',monospace; }
+  .arch-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .arch-box { padding:6px 14px; border-radius:8px; border:1px solid; white-space:nowrap; font-weight:600; font-size:12px; }
+  .ab-purple { background:rgba(123,82,211,0.1); border-color:rgba(123,82,211,0.35); color:#5b21b6; }
+  .ab-blue { background:rgba(43,174,232,0.1); border-color:rgba(43,174,232,0.35); color:#0369a1; }
+  .ab-green { background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.35); color:#065f46; }
+  .ab-orange { background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.35); color:#92400e; }
+  .ab-gray { background:#f1f3f8; border-color:var(--border); color:var(--dim); }
+  .arch-arrow { color:var(--light); font-size:1rem; }
+  .arch-label { font-family:'Noto Sans SC',sans-serif; font-size:11px; color:var(--dim); }
+
+  /* Table */
+  .table-wrap { overflow-x:auto; border-radius:14px; border:1px solid var(--border); margin:20px 0; }
+  table { width:100%; border-collapse:collapse; background:var(--white); }
+  th { background:#f1f3f8; color:var(--mid); font-size:11px; text-transform:uppercase; letter-spacing:1px; padding:12px 16px; text-align:left; font-weight:700; }
+  td { padding:12px 16px; border-top:1px solid var(--border); font-size:13px; color:var(--mid); vertical-align:top; line-height:1.6; }
+  tr:hover td { background:#f8f6ff; }
+  td:first-child { font-weight:600; color:var(--ink); }
+
+  /* Sitemap */
+  .sitemap { background:var(--white); border:1px solid var(--border); border-radius:14px; padding:28px; }
+  .sitemap-node { margin-left:0; }
+  .sm-root { display:inline-block; background:var(--purple); color:#fff; border-radius:8px; padding:6px 16px; font-weight:700; font-size:13px; margin-bottom:16px; }
+  .sm-section { margin-bottom:20px; }
+  .sm-section-title { display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:13px; color:var(--ink); margin-bottom:10px; }
+  .sm-section-badge { font-size:11px; padding:2px 8px; border-radius:6px; font-weight:700; }
+  .sm-pages { display:flex; flex-wrap:wrap; gap:8px; margin-left:20px; }
+  .sm-page { border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px; color:var(--mid); background:#f8f8fc; }
+  .sm-page.core { border-color:rgba(123,82,211,0.4); background:rgba(123,82,211,0.06); color:#5b21b6; }
+  .sm-page.api { border-color:rgba(43,174,232,0.4); background:rgba(43,174,232,0.06); color:#0369a1; font-family:'JetBrains Mono',monospace; font-size:11px; }
+  .sm-connector { width:1px; height:16px; background:var(--border); margin:0 0 0 8px; }
+
+  /* User flow */
+  .flow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:16px 0; }
+  .flow-step { background:var(--white); border:1px solid var(--border); border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; }
+  .flow-step.active { border-color:var(--purple); background:rgba(123,82,211,0.06); color:#5b21b6; }
+  .flow-arrow { color:var(--light); }
+
+  /* Badges */
+  .badge { display:inline-flex; align-items:center; font-size:11px; font-weight:700; padding:3px 9px; border-radius:10px; }
+  .b-p1 { background:#edf9f0; color:#059669; border:1px solid #a7f3d0; }
+  .b-later { background:#f5f5f5; color:#999; border:1px solid #e2e2ee; }
+  .b-must { background:#fce4ec; color:#c62828; border:1px solid #f48fb1; }
+
+  /* Tags */
+  .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .tag { font-size:11px; font-weight:600; padding:3px 9px; border-radius:8px; background:var(--bg); color:var(--dim); border:1px solid var(--border); }
+
+  footer { text-align:center; padding:32px; color:var(--light); font-size:12px; border-top:1px solid var(--border); margin-top:60px; background:#f1f3f8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="brand">🗂 Nicole Research</span>
+  <a href="/index.html">Proactive Agent</a>
+  <a href="/openclaw-memory-guide.html">OpenClaw Memory</a>
+  <a href="/sitesfy-mvp.html">Sitesfy MVP</a>
+  <a href="/sitesfy-linkedin-api.html">LinkedIn API</a>
+  <a href="/sitesfy-prd.html" style="background:rgba(99,85,232,0.08);color:#6355e8;font-weight:600;">Sitesfy PRD ✦</a>
+</nav>
+
+<div class="page">
+
+  <div class="doc-eyebrow">Sitesfy · 完整产品需求文档</div>
+  <h1 class="doc-title">Sitesfy <span class="grad">Product Requirements Document</span></h1>
+  <p class="doc-sub">从战略定位到网站架构的完整产品设计文档</p>
+  <div class="doc-meta">
+    <span><strong>版本</strong> v2.0</span>
+    <span><strong>日期</strong> 2026-03-24</span>
+    <span><strong>作者</strong> Steve Wang + Noa (AI)</span>
+    <span><strong>状态</strong> 草稿·内部讨论</span>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">目录</div>
+    <div class="toc-grid">
+      <a href="#vision">① 产品愿景与定位</a>
+      <a href="#users">② 目标用户</a>
+      <a href="#architecture">③ 产品架构</a>
+      <a href="#modules">④ 核心模块详解</a>
+      <a href="#sitemap">⑤ 网站信息架构</a>
+      <a href="#userflow">⑥ 关键用户路径</a>
+      <a href="#tech">⑦ 技术栈</a>
+      <a href="#metrics">⑧ 成功指标</a>
+      <a href="#roadmap">⑨ 发布路线图</a>
+      <a href="#risks">⑩ 风险与护城河</a>
+    </div>
+  </div>
+
+  <!-- 1. 愿景 -->
+  <div class="section" id="vision">
+    <div class="section-header">
+      <div class="stripe s-purple"></div>
+      <div><h2>产品愿景与定位</h2><span class="sub">为什么是 Sitesfy</span></div>
+    </div>
+
+    <div class="insight key">
+      <span class="insight-icon">🎯</span>
+      <div class="insight-text">
+        <strong>核心命题：</strong>「你的第一个出海市场情报官」<br>
+        不是帮你发邮件，是帮你比竞争对手多看一层市场信号——信号差距才是护城河。
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>❌ 我们不是</h3>
+        <p>邮件群发工具 / SEO 写作工具 / 通用 AI Agent<br>「帮你执行」的工具已经够多了。</p>
+      </div>
+      <div class="card">
+        <h3>✅ 我们是</h3>
+        <p>出海获客的判断引擎。核心价值在于：把市场信号转化为用户的具体行动指令，让每一个动作都发生在正确的时机、正确的对象上。</p>
+      </div>
+    </div>
+
+    <div class="layer-cards">
+      <div class="layer-card l1">
+        <div class="layer-num">Layer 1</div>
+        <div class="layer-name">Signal Intelligence · 信号情报</div>
+        <div class="layer-desc">监控市场信号：谁在找替代方案、竞品出了什么问题、行业采购信号是什么</div>
+        <div class="layer-out">输出：判断依据，不是名单</div>
+      </div>
+      <div class="layer-card l2">
+        <div class="layer-num">Layer 2</div>
+        <div class="layer-name">Judgment Engine · 判断引擎</div>
+        <div class="layer-desc">把信号转化为行动指令：「这周德国有3家在问ESG认证」「律所有2家高意图访客」</div>
+        <div class="layer-out">输出：具体行动指令</div>
+      </div>
+      <div class="layer-card l3">
+        <div class="layer-num">Layer 3</div>
+        <div class="layer-name">Execution Autopilot · 执行</div>
+        <div class="layer-desc">判断正确后才自动化：发邮件、写文章、跟进序列。大量外包给 Instantly/Apollo</div>
+        <div class="layer-out">Sitesfy 只赚「判断正确」的钱</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 目标用户 -->
+  <div class="section" id="users">
+    <div class="section-header">
+      <div class="stripe s-blue"></div>
+      <div><h2>目标用户</h2><span class="sub">种子客户 → 规模化画像</span></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>🎲 义乌桌游公司（种子·Outbound）</h3>
+        <p><strong>背景：</strong>B2B 跨境出口，制造/零售，年营收 500W-2000W RMB<br>
+        <strong>目标：</strong>找欧洲（尤其德国）桌游零售商和采购商，建立直接联系<br>
+        <strong>痛点：</strong>不知道找谁、不会写英文邮件、发了没回音<br>
+        <strong>路径：</strong>Outbound 为主，德语关键，Apollo 数据源</p>
+        <div class="tags"><span class="tag">制造业</span><span class="tag">跨境出口</span><span class="tag">B2B</span><span class="tag">欧洲市场</span></div>
+      </div>
+      <div class="card">
+        <h3>⚖️ 跨境法律咨询（种子·Inbound）</h3>
+        <p><strong>背景：</strong>B2B 专业服务，2-10 人律所/咨询公司<br>
+        <strong>目标：</strong>吸引有出海合规需求的中国企业，主动搜索 GDPR/出海合规的潜客<br>
+        <strong>痛点：</strong>网站没流量、不知道来了谁、错过高意图访客<br>
+        <strong>路径：</strong>Inbound 为主，SEO + 访客识别关键</p>
+        <div class="tags"><span class="tag">专业服务</span><span class="tag">法律咨询</span><span class="tag">Inbound</span><span class="tag">合规出海</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📈 规模化后的目标客户画像</h3>
+      <p><strong>公司规模：</strong>10-200 人，有出海意愿但缺乏系统化获客能力<br>
+      <strong>行业：</strong>制造业出口、专业服务（法律/财税/咨询）、SaaS 出海<br>
+      <strong>决策人：</strong>创始人 / 销售负责人 / 市场负责人<br>
+      <strong>共同特征：</strong>已经有产品，卡在「找到对的人并建立联系」这一步</p>
+    </div>
+  </div>
+
+  <!-- 3. 产品架构 -->
+  <div class="section" id="architecture">
+    <div class="section-header">
+      <div class="stripe s-green"></div>
+      <div><h2>产品架构</h2><span class="sub">六大引擎如何协同运作</span></div>
+    </div>
+
+    <div class="arch">
+      <div style="font-size:12px;color:var(--dim);margin-bottom:16px;font-family:'Noto Sans SC',sans-serif;">数据流向与模块协作关系</div>
+
+      <div class="arch-row">
+        <div class="arch-box ab-gray">用户输入 URL</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-box ab-purple">ICP Engine</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">自动提炼产品定位 + 生成目标客户画像</div>
+      </div>
+      <div style="margin-left:12px;color:var(--border);font-size:1.2rem;margin-bottom:4px;">↓</div>
+
+      <div class="arch-row">
+        <div class="arch-box ab-blue">Signal Intelligence</div>
+        <div class="arch-arrow">←</div>
+        <div class="arch-box ab-gray">外部信号源</div>
+        <div class="arch-label">（Apollo / RB2B / 邮件回复率 / SEO 排名）</div>
+      </div>
+      <div style="margin-left:12px;color:var(--border);font-size:1.2rem;margin-bottom:4px;">↓</div>
+
+      <div class="arch-row">
+        <div class="arch-box ab-purple">Proactive Core</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">判断：现在应该做什么？调整发量 / 触发 Capture / 暂停低效方向</div>
+      </div>
+      <div style="margin-left:12px;color:var(--border);font-size:1.2rem;margin-bottom:4px;">↓</div>
+
+      <div class="arch-row">
+        <div class="arch-box ab-green">Content Engine</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-box ab-orange">Outreach Engine</div>
+        <div class="arch-arrow">+</div>
+        <div class="arch-box ab-blue">Capture Engine</div>
+        <div class="arch-label">→ 执行层并行运转</div>
+      </div>
+      <div style="margin-left:12px;color:var(--border);font-size:1.2rem;margin-bottom:4px;">↓</div>
+
+      <div class="arch-row">
+        <div class="arch-box ab-gray">Learning Engine</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-label">回收结果数据，反哺 ICP 修正 + 调整 Proactive 决策逻辑</div>
+      </div>
+    </div>
+
+    <div class="insight tip">
+      <span class="insight-icon">🔄</span>
+      <div class="insight-text">
+        <strong>飞轮逻辑：</strong>ICP 越准 → 信号越精准 → 执行越有效 → 回复率越高 → 数据反哺 ICP → 飞轮加速。核心是让每个模块的输出成为下一个模块的输入。
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 核心模块 -->
+  <div class="section" id="modules">
+    <div class="section-header">
+      <div class="stripe s-orange"></div>
+      <div><h2>核心模块详解</h2><span class="sub">六大引擎的功能边界与接口</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>模块</th><th>核心职责</th><th>输入</th><th>输出</th><th>外部依赖</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Proactive Core</td>
+            <td>感知信号 → 自主决策 → 驱动执行。整个系统的「大脑」</td>
+            <td>所有引擎的信号反馈</td>
+            <td>执行指令 + 周报 + 决策推送</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>ICP Engine</td>
+            <td>定义和持续优化目标客户画像</td>
+            <td>用户 URL、Apollo 数据、回复率数据</td>
+            <td>结构化 ICP（行业/职位/地区/规模）</td>
+            <td>Apollo API</td>
+          </tr>
+          <tr>
+            <td>Content Engine</td>
+            <td>Outbound 开发信 + Inbound SEO 文章生成</td>
+            <td>ICP 画像 + 产品定位 + 目标关键词</td>
+            <td>邮件序列 / SEO 文章草稿</td>
+            <td>LLM API / WordPress API</td>
+          </tr>
+          <tr>
+            <td>Outreach Engine</td>
+            <td>邮件发送、域名预热、发量管理</td>
+            <td>Content Engine 输出 + 发送策略</td>
+            <td>邮件送达 + 回复率数据</td>
+            <td>Instantly API / Resend</td>
+          </tr>
+          <tr>
+            <td>Capture Engine</td>
+            <td>识别高意图网站访客，即时触发外发</td>
+            <td>访客行为数据</td>
+            <td>高意图线索 → 触发 Outreach</td>
+            <td>RB2B / Clearbit</td>
+          </tr>
+          <tr>
+            <td>Learning Engine</td>
+            <td>收集结果数据，反哺优化上游模块</td>
+            <td>回复率、转化率、排名数据</td>
+            <td>优化指令 → Proactive Core + ICP Engine</td>
+            <td>GSC / Ahrefs API</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. 网站信息架构 -->
+  <div class="section" id="sitemap">
+    <div class="section-header">
+      <div class="stripe s-red"></div>
+      <div><h2>网站信息架构</h2><span class="sub">Sitemap · 页面层级与路由</span></div>
+    </div>
+
+    <div class="sitemap">
+      <div class="sm-root">sitesfy.ai</div>
+
+      <!-- Marketing -->
+      <div class="sm-section">
+        <div class="sm-section-title">
+          <span class="sm-section-badge" style="background:#e3f2fd;color:#1565c0;border:1px solid #90caf9;">🌐 营销页面</span>
+          公开可访问，SEO 优化
+        </div>
+        <div class="sm-pages">
+          <div class="sm-page core">/（首页）</div>
+          <div class="sm-page">/pricing（定价）</div>
+          <div class="sm-page">/features（功能）</div>
+          <div class="sm-page">/use-cases/outbound（Outbound 场景）</div>
+          <div class="sm-page">/use-cases/inbound（Inbound 场景）</div>
+          <div class="sm-page">/blog（内容中心）</div>
+          <div class="sm-page">/case-studies（客户案例）</div>
+          <div class="sm-page">/about</div>
+        </div>
+      </div>
+
+      <!-- Onboarding -->
+      <div class="sm-section">
+        <div class="sm-section-title">
+          <span class="sm-section-badge" style="background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;">🚀 注册 & 上手</span>
+          新用户引导流程
+        </div>
+        <div class="sm-pages">
+          <div class="sm-page core">/signup</div>
+          <div class="sm-page core">/onboarding/url（粘贴网址）</div>
+          <div class="sm-page core">/onboarding/icp-confirm（确认 ICP）</div>
+          <div class="sm-page core">/onboarding/scenario（选场景：Outbound/Inbound）</div>
+          <div class="sm-page core">/onboarding/connect（接入 Instantly / RB2B）</div>
+          <div class="sm-page">/onboarding/done（首次设置完成）</div>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="sm-section">
+        <div class="sm-section-title">
+          <span class="sm-section-badge" style="background:#f3e5f5;color:#6a1b9a;border:1px solid #ce93d8;">📊 主控台</span>
+          登录后核心使用界面
+        </div>
+        <div class="sm-pages">
+          <div class="sm-page core">/dashboard（总览 + 本周周报）</div>
+          <div class="sm-page">/dashboard/signals（信号情报中心）</div>
+          <div class="sm-page">/dashboard/icp（ICP 管理）</div>
+          <div class="sm-page">/dashboard/outreach（外发管理 + 状态）</div>
+          <div class="sm-page">/dashboard/content（内容草稿 + 发布队列）</div>
+          <div class="sm-page">/dashboard/leads（线索列表）</div>
+          <div class="sm-page">/dashboard/analytics（数据分析）</div>
+          <div class="sm-page">/dashboard/settings（账号 + 集成配置）</div>
+        </div>
+      </div>
+
+      <!-- API -->
+      <div class="sm-section">
+        <div class="sm-section-title">
+          <span class="sm-section-badge" style="background:#e3f2fd;color:#0277bd;border:1px solid #81d4fa;">⚙️ API & 集成</span>
+          开发者端点
+        </div>
+        <div class="sm-pages">
+          <div class="sm-page api">/api/v1/icp</div>
+          <div class="sm-page api">/api/v1/signals</div>
+          <div class="sm-page api">/api/v1/outreach</div>
+          <div class="sm-page api">/api/v1/content</div>
+          <div class="sm-page api">/api/v1/webhook</div>
+          <div class="sm-page">/docs（API 文档）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 用户路径 -->
+  <div class="section" id="userflow">
+    <div class="section-header">
+      <div class="stripe s-pink"></div>
+      <div><h2>关键用户路径</h2><span class="sub">首次上手 → 核心循环</span></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>🛤 路径 A：Outbound（桌游场景）</h3>
+      <div class="flow">
+        <div class="flow-step active">粘贴网址</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">确认 ICP</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">Apollo 拉名单</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">生成德语开发信序列</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">Instantly 发送</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">回复率监控</div><div class="flow-arrow">→</div>
+        <div class="flow-step">Proactive 调整方向</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3>🛤 路径 B：Inbound（律所场景）</h3>
+      <div class="flow">
+        <div class="flow-step active">粘贴网址</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">关键词研究</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">生成 SEO 文章</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">人工轻确认</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">自动发布到网站</div><div class="flow-arrow">→</div>
+        <div class="flow-step active">RB2B 识别高意图访客</div><div class="flow-arrow">→</div>
+        <div class="flow-step">自动触发个性化外发</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔄 核心使用循环（每周）</h3>
+      <div class="flow">
+        <div class="flow-step">周一收到周报</div><div class="flow-arrow">→</div>
+        <div class="flow-step">回答一个决策问题</div><div class="flow-arrow">→</div>
+        <div class="flow-step">引擎自动执行本周动作</div><div class="flow-arrow">→</div>
+        <div class="flow-step">周五看数据</div><div class="flow-arrow">→</div>
+        <div class="flow-step">下周周报</div>
+      </div>
+      <p style="font-size:12px;color:var(--dim);margin-top:12px;">目标：用户每周投入 ＜30 分钟，引擎自主运转其余时间</p>
+    </div>
+  </div>
+
+  <!-- 7. 技术栈 -->
+  <div class="section" id="tech">
+    <div class="section-header">
+      <div class="stripe s-blue"></div>
+      <div><h2>技术栈</h2><span class="sub">MVP 阶段选型</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>层级</th><th>技术选型</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>前端</td><td>Next.js 14 + Tailwind CSS</td><td>SSR 利于 SEO，组件生态成熟，Vercel 部署零配置</td></tr>
+          <tr><td>后端</td><td>Next.js API Routes + Python 微服务</td><td>JS 处理 Web 层，Python 处理 AI/数据密集型任务</td></tr>
+          <tr><td>数据库</td><td>Supabase（PostgreSQL）</td><td>开源，含 Auth + Realtime + Row Level Security</td></tr>
+          <tr><td>AI/LLM</td><td>Anthropic Claude Opus 4.5（主力）+ Gemini 2.5（内容生成）</td><td>推理用 Claude，大批量内容生成用更便宜的 Gemini</td></tr>
+          <tr><td>邮件发送</td><td>Instantly API（序列）+ Resend（通知）</td><td>Instantly 专做冷邮件外发，Resend 现代 DX</td></tr>
+          <tr><td>联系人数据</td><td>Apollo.io API</td><td>覆盖最广，按 ICP 条件拉取</td></tr>
+          <tr><td>访客识别</td><td>RB2B API</td><td>匿名访客 → 公司识别，专为 B2B 设计</td></tr>
+          <tr><td>搜索数据</td><td>Google Search Console API + Ahrefs API</td><td>GSC 免费，Ahrefs 补充竞品关键词</td></tr>
+          <tr><td>定时任务</td><td>Vercel Cron（简单）+ Trigger.dev（复杂流）</td><td>Proactive Core 的定时触发和长时运行任务</td></tr>
+          <tr><td>部署</td><td>Vercel（前端）+ Fly.io（Python 服务）</td><td>各自最优，合理分工</td></tr>
+          <tr><td>LinkedIn 数据</td><td>Proxycurl API</td><td>最稳定的第三方 LinkedIn 数据源，按量付费</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 8. 成功指标 -->
+  <div class="section" id="metrics">
+    <div class="section-header">
+      <div class="stripe s-green"></div>
+      <div><h2>成功指标</h2><span class="sub">如何衡量产品是否有效</span></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>指标</th><th>定义</th><th>MVP 目标</th><th>健康值</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>邮件回复率</td><td>有效回复 / 发送量</td><td>＞ 5%</td><td>行业均值 2-3%，Sitesfy 应 2x</td></tr>
+          <tr><td>高意图访客触达率</td><td>被识别的高意图访客中，成功触达的比例</td><td>＞ 60%</td><td>越高越好</td></tr>
+          <tr><td>用户周活</td><td>每周登录查看周报的用户比例</td><td>＞ 70%</td><td>核心粘性指标</td></tr>
+          <tr><td>引擎自主运转率</td><td>无需用户干预、引擎自动完成的动作比例</td><td>＞ 80%</td><td>产品核心价值验证</td></tr>
+          <tr><td>客户有效回复数</td><td>种子客户每月收到的有意义回复数</td><td>≥ 10 条/月</td><td>达到此门槛客户续费率极高</td></tr>
+          <tr><td>ICP 准确率</td><td>用户确认 ICP 时需要修改的字段比例（越低越好）</td><td>＜ 30% 需修改</td><td>越准越能快速启动</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. 路线图 -->
+  <div class="section" id="roadmap">
+    <div class="section-header">
+      <div class="stripe s-orange"></div>
+      <div><h2>发布路线图</h2><span class="sub">三阶段推进</span></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>Phase 1 · MVP<br><span style="font-weight:400;font-size:12px;color:var(--dim);">6-8 周 · 验证核心循环</span></h3>
+        <p style="font-size:12px;line-height:1.8;">
+          ✅ URL → ICP 自动生成<br>
+          ✅ Apollo 接入 + 名单生成<br>
+          ✅ 英语/德语开发信 + 3步序列<br>
+          ✅ Instantly 接入 + 域名预热<br>
+          ✅ 回复率监听 → Proactive 调量<br>
+          ✅ 周报 + 每周决策问题<br>
+          ✅ RB2B 访客识别（律所）<br>
+          ✅ SEO 文章生成 + 发布（律所）
+        </p>
+        <div class="badge b-p1" style="margin-top:10px;">验证「引擎能自运转」</div>
+      </div>
+      <div class="card">
+        <h3>Phase 2 · Growth<br><span style="font-weight:400;font-size:12px;color:var(--dim);">第 2-3 个月 · 扩展信号源</span></h3>
+        <p style="font-size:12px;line-height:1.8;">
+          ○ Signal Intelligence 中心<br>
+          ○ 竞品监控（谁在找替代）<br>
+          ○ Panjiva 贸易数据接入<br>
+          ○ LinkedIn 触达序列<br>
+          ○ 回复率反哺 ICP 修正<br>
+          ○ 执行日志界面<br>
+          ○ 多语言话术（西/法/日）<br>
+          ○ Autonomy Threshold 分级
+        </p>
+        <div class="badge b-later" style="margin-top:10px;">扩展判断能力</div>
+      </div>
+      <div class="card">
+        <h3>Phase 3 · Scale<br><span style="font-weight:400;font-size:12px;color:var(--dim);">第 4-6 个月 · 按结果定价</span></h3>
+        <p style="font-size:12px;line-height:1.8;">
+          ○ 按回复数计费模型<br>
+          ○ Judgment Engine 完整实现<br>
+          ○ 跨客户信号聚合（行业洞察）<br>
+          ○ 异常检测 + 实时告警<br>
+          ○ 月度洞察报告<br>
+          ○ 转化路径追踪（到成单）<br>
+          ○ API 开放给合作伙伴<br>
+          ○ 自助注册 + 产品化上手流程
+        </p>
+        <div class="badge b-must" style="margin-top:10px;">商业模型升级</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. 风险与护城河 -->
+  <div class="section" id="risks">
+    <div class="section-header">
+      <div class="stripe s-red"></div>
+      <div><h2>风险与护城河</h2><span class="sub">核心挑战 + 差异化来源</span></div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#c62828;">⚠️ 核心风险</h3>
+        <div class="insight danger" style="margin-bottom:10px;">
+          <span class="insight-icon">📧</span>
+          <div class="insight-text"><strong>邮件送达率下降：</strong>批量个性化邮件的 AI 味越来越容易被 ESP 识别，域名声誉是消耗品</div>
+        </div>
+        <div class="insight danger" style="margin-bottom:10px;">
+          <span class="insight-icon">📊</span>
+          <div class="insight-text"><strong>ICP 偏差放大：</strong>判断错误 + 自动化 = 规模化地烧钱，早期校准至关重要</div>
+        </div>
+        <div class="insight warn" style="margin-bottom:10px;">
+          <span class="insight-icon">🔗</span>
+          <div class="insight-text"><strong>第三方依赖风险：</strong>Apollo/Instantly/RB2B 任一定价调整或 API 变更都影响核心功能</div>
+        </div>
+        <div class="insight warn">
+          <span class="insight-icon">⚖️</span>
+          <div class="insight-text"><strong>合规风险：</strong>GDPR 对欧洲冷邮件有严格限制，德国市场尤其敏感</div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#2e7d32;">🏰 护城河来源</h3>
+        <div class="insight tip" style="margin-bottom:10px;">
+          <span class="insight-icon">📈</span>
+          <div class="insight-text"><strong>数据飞轮：</strong>客户越多 → 行业信号越丰富 → 判断越准 → 回复率越高。跨客户的行业级信号是最大护城河</div>
+        </div>
+        <div class="insight tip" style="margin-bottom:10px;">
+          <span class="insight-icon">🎯</span>
+          <div class="insight-text"><strong>时机评分算法：</strong>「什么时候发、发给谁」的判断逻辑沉淀在系统里，竞品无法直接复制</div>
+        </div>
+        <div class="insight tip" style="margin-bottom:10px;">
+          <span class="insight-icon">🔄</span>
+          <div class="insight-text"><strong>客户上下文积累：</strong>使用越久，Sitesfy 越懂这个客户的市场，切换成本越高</div>
+        </div>
+        <div class="insight tip">
+          <span class="insight-icon">💡</span>
+          <div class="insight-text"><strong>按结果定价：</strong>长期目标是按有效回复收费，倒逼产品必须真正解决判断问题</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Sitesfy PRD v2.0 · 2026-03-24 · Steve Wang + Noa</footer>
+</body>
+</html>
